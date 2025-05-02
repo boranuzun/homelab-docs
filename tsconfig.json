@@ -1,7 +1,10 @@
 {
   // This file is not used in compilation. It is here just for a nice editor experience.
+  "include": ["src"],
   "extends": "@docusaurus/tsconfig",
   "compilerOptions": {
-    "baseUrl": "."
+    "baseUrl": ".",
+    "jsx": "react-jsx",
+    "types": ["react", "react-dom", "node"]
   }
 }
