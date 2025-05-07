@@ -1,5 +1,5 @@
-import { HighlightedCode, Pre } from "codehike/code"
-import { callout } from "./annotations/callout"
+import { HighlightedCode, Pre } from "codehike/code";
+import { callout } from "./annotations/callout";
 
 export function MyCode({ codeblock }: { codeblock: HighlightedCode }) {
   return (
@@ -10,5 +10,5 @@ export function MyCode({ codeblock }: { codeblock: HighlightedCode }) {
         style={{ background: "#212121", color: "#fafafa" }}
       />
     </div>
-  )
+  );
 }

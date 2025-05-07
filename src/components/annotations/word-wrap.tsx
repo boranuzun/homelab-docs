@@ -3,7 +3,7 @@ import {
   InnerLine,
   InnerPre,
   InnerToken,
-} from "codehike/code"
+} from "codehike/code";
 
 export const wordWrap: AnnotationHandler = {
   name: "word-wrap",
@@ -18,4 +18,4 @@ export const wordWrap: AnnotationHandler = {
     />
   ),
   Token: (props) => <InnerToken merge={props} style={{ textIndent: 0 }} />,
-}
+};
