@@ -39,10 +39,9 @@ const config: Config = {
           sidebarPath: "./sidebars.ts",
           showLastUpdateTime: true,
           showLastUpdateAuthor: true,
-          // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          // editUrl:
-          //   "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
+          editUrl: "https://github.com/boranuzun/homelab-docs/tree/main/",
+          editLocalizedFiles: true,
         },
         blog: {
           showReadingTime: true,
@@ -50,10 +49,11 @@ const config: Config = {
             type: ["rss", "atom"],
             xslt: true,
           },
-          // Please change this to your repo.
+          showLastUpdateTime: true,
+          showLastUpdateAuthor: true,
           // Remove this to remove the "edit this page" links.
-          // editUrl:
-          //   "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
+          editUrl: "https://github.com/boranuzun/homelab-docs/tree/main/",
+          editLocalizedFiles: true,
           // Useful options to enforce blogging best practices
           onInlineTags: "warn",
           onInlineAuthors: "warn",
@@ -76,7 +76,6 @@ const config: Config = {
         alt: "Site Logo",
         src: "img/logo.svg",
         srcDark: "img/logo.svg",
-        // href: "/",
         target: "_self",
         width: 32,
         height: 32,
@@ -89,21 +88,27 @@ const config: Config = {
           label: "Docs",
         },
         { to: "/blog", label: "Blog", position: "left" },
-        // {
-        //   href: "https://github.com/facebook/docusaurus",
-        //   label: "GitHub",
-        //   position: "right",
-        // },
         {
           type: "localeDropdown",
           position: "right",
+        },
+        {
+          href: "https://github.com/boranuzun/homelab-docs",
+          position: "right",
+          className: "header-github-link",
+          "aria-label": "GitHub repository",
         },
       ],
     },
     docs: {
       sidebar: {
         hideable: false,
-        autoCollapseCategories: false,
+        autoCollapseCategories: true,
+      },
+    },
+    blog: {
+      sidebar: {
+        groupByYear: true,
       },
     },
     colorMode: {

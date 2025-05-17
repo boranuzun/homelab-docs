@@ -1,47 +1,82 @@
 ---
+id: intro
 sidebar_position: 1
+sidebar_label: Introduction
+description: 'An introduction to the project and its objectives.'
+keywords:
+  [
+    'OpenTofu',
+    'IaC',
+    'Proxmox',
+    'NixOS',
+    'ISO',
+    'Installation',
+    'homelab',
+    'Infrastructure as Code',
+    'OS as Code',
+    'GitOps',
+    'DevOps',
+    'automation',
+    'deployment',
+    'virtualization',
+    'Docker',
+    'containers',
+    'CI/CD',
+    'GitHub Actions',
+    'SOPS',
+    'age',
+    'secrets management',
+    'Tailscale',
+    'AdGuard Home',
+    'Homepage',
+    'Traefik',
+    'Uptime Kuma',
+    'Watchtower',
+    'Open Source',
+  ]
+tags: []
+draft: false
+# unlisted: true
 ---
 
-# Tutorial Intro
+# Context
 
-Let's discover **Docusaurus in less than 5 minutes**.
+This documentation site was created as part of my Bachelor's thesis at the **[Haute école de gestion de Genève](https://www.hesge.ch/heg/)**. The project is titled:
 
-## Getting Started
+> **Conception et déploiement automatisé d’un Operating System as Code à l’aide de pratiques Infrastructure as Code.**
 
-Get started by **creating a new site**.
+## Main Objective
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+The goal is to design and automate the deployment of an **Operating System as Code** environment by applying modern **Infrastructure as Code (IaC)** best practices. Everything should be defined in code to enable:
 
-### What you'll need
+- Version control
+- Reproducibility
+- Maintainability
 
-- [Node.js](https://nodejs.org/en/download/) version 18.0 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+## Technical Context
 
-## Generate a new site
+To put these principles into practice, I’m building a **homelab** running on a **NixOS** virtual machine hosted on a **Proxmox** hypervisor.
 
-Generate a new Docusaurus site using the **classic template**.
+On this VM, I will deploy several **Docker containers** for useful services such as:
 
-The classic template will automatically be added to your project after you run the command:
+- [Tailscale](https://tailscale.com) — private mesh VPN
+- [AdGuard Home](https://adguard.com/en/adguard-home/overview.html) — DNS-level ad and tracker blocking
+- [Homepage](https://github.com/gethomepage/homepage) — service dashboard
+- [Traefik](https://traefik.io) — reverse proxy
+- [Uptime Kuma](https://github.com/louislam/uptime-kuma) — uptime monitoring
+- [Watchtower](https://github.com/containrrr/watchtower) — automatic container updates
 
-```bash
-npm init docusaurus@latest my-website classic
-```
+## Tools and Technologies
 
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
+Here is a non-exhaustive list of tools and technologies I will use:
 
-The command also installs all necessary dependencies you need to run Docusaurus.
+- **OpenTofu**: Terraform-compatible open-source IaC tool
+- **Proxmox**: Virtualization platform for managing VMs
+- **NixOS**: Declarative and reproducible Linux distribution
+- **SOPS + age**: Secure and versioned secrets management
+- **GitHub Actions**: CI/CD automation for deployment pipelines
+- **Docker Compose**: Service orchestration for container-based apps
 
-## Start your site
+---
 
-Run the development server:
-
-```bash
-cd my-website
-npm run start
-```
-
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
-
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
-
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+This documentation serves as a **technical reference** throughout the project and could also benefit other students or professionals looking to build a reproducible Infrastructure as Code setup.

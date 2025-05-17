@@ -2,5 +2,29 @@
   "version.label": {
     "message": "Next",
     "description": "The label for version current"
+  },
+  "sidebar.tutorialSidebar.category.OpenTofu": {
+    "message": "OpenTofu",
+    "description": "The label for category OpenTofu in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.OpenTofu.link.generated-index.description": {
+    "message": "In this section, we will configure OpenTofu to work with a Proxmox server, enabling users to provsion and manage their infrastructure using OpenTofu. We will cover the installation of OpenTofu, the configuration of the Proxmox provider, and the creation of a simple OpenTofu configuration file to manage a NixOS virtual machine.",
+    "description": "The generated-index page description for category OpenTofu in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.NixOS": {
+    "message": "NixOS",
+    "description": "The label for category NixOS in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.NixOS.link.generated-index.description": {
+    "message": "NixOS is a Linux distribution that uses the Nix package manager to provide a declarative configuration model for system management. It allows users to define their entire system configuration in a single file, making it easy to reproduce and share configurations across different machines. NixOS is known for its reliability, reproducibility, and flexibility, making it a popular choice for developers and system administrators.",
+    "description": "The generated-index page description for category NixOS in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Containers": {
+    "message": "Containers",
+    "description": "The label for category Containers in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Containers.link.generated-index.description": {
+    "message": "Here is a list of all my docker-compose.yml files I use to spin up my containers.",
+    "description": "The generated-index page description for category Containers in sidebar tutorialSidebar"
   }
 }

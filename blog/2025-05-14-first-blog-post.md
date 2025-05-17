@@ -3,6 +3,7 @@ slug: first-blog-post
 title: First Blog Post
 authors: [boranuzun]
 tags: [hello, docusaurus]
+keywords: [hello, docusaurus]
 ---
 
 Lorem ipsum dolor sit amet...

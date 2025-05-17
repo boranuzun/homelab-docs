@@ -1,0 +1,9 @@
+# Ignore artifacts:
+build
+node_modules
+.docusaurus
+.github
+i18n
+docusaurus.config.ts
+.svg
+*.svg
