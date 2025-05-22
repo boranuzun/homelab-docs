@@ -1,0 +1,45 @@
+---
+title: Introduction
+description: An introduction to the project and its objectives.
+---
+
+This documentation site was created as part of my Bachelor's thesis at the **[Haute école de gestion de Genève](https://www.hesge.ch/heg/)**. The project is titled:
+
+> **Conception et déploiement automatisé d’un Operating System as Code à l’aide de pratiques Infrastructure as Code.**
+
+## Main Objective
+
+The aim of this project is to design and automate the deployment of a personal **homelab server** by applying modern practices like **Infrastructure as Code (IaC)**, **GitOps**, and **DevSecOps**. This approach ensures that infrastructure configuration is:
+
+| Principle              | Description                                                      |
+| ---------------------- | ---------------------------------------------------------------- |
+| **Version-controlled** | All changes are tracked in Git and pushed to a remote repository |
+| **Reproducible**       | Systems can be rebuilt reliably from the same source             |
+| **Maintainable**       | Make updates and fixes easier to apply and track                 |
+| **Secure**             | Sensitive data is encrypted and managed properly                 |
+
+To apply these principles, I’m building a personal **homelab** environment using a **NixOS** virtual machine hosted on a **Proxmox** hypervisor. This VM provides a platform for deploying and managing services using declarative and automated workflows.
+
+On this VM, I will deploy several containerized services, including:
+
+- **[Tailscale](https://tailscale.com)** — private mesh VPN
+- **[AdGuard Home](https://adguard.com/en/adguard-home/overview.html)** — DNS-level ad and tracker blocking
+- **[Homepage](https://github.com/gethomepage/homepage)** — service dashboard
+- **[Traefik](https://traefik.io)** — reverse proxy
+- **[Uptime Kuma](https://github.com/louislam/uptime-kuma)** — uptime monitoring
+- **[Watchtower](https://github.com/containrrr/watchtower)** — automatic container updates
+
+## Tools and Technologies
+
+Here’s a non-exhaustive list of tools and technologies involved:
+
+- **OpenTofu** — Terraform-compatible open-source IaC tool
+- **Proxmox** — Virtualization platform for managing VMs
+- **NixOS** — Declarative and reproducible Linux distribution
+- **SOPS + age** — Secure and versioned secrets management
+- **GitHub Actions** — CI/CD automation for deployment pipelines
+- **Docker Compose** — Tool for defining and running multi-container Docker applications
+
+---
+
+This documentation serves as a **technical reference** throughout the project and may serve other students or professionals exploring reproducible, code-driven infrastructure design.

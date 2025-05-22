@@ -1,0 +1,241 @@
+---
+title: Hook up SOPS with Git
+description: "Integrate SOPS with Git to automatically encrypt files during commits."
+sidebar:
+  order: 3
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+import { Icon } from "@astrojs/starlight/components";
+import { Steps } from "@astrojs/starlight/components";
+
+## Why use a Git hook?
+
+Git hooks are scripts that run automatically at certain points in the Git workflow. By using a Git hook, you can ensure that sensitive files are encrypted before they are committed to the repository. This adds an extra layer of security and helps prevent accidental exposure of sensitive data. To set up a Git hook for SOPS, we will use [pre-commit](https://github.com/pre-commit/pre-commit), a framework for managing and maintaining multi-language pre-commit hooks.
+
+## Install pre-commit
+
+<Tabs syncKey="package-managers">
+  <TabItem label="Pip" >
+
+```bash
+pip install pre-commit
+```
+
+  </TabItem>
+  <TabItem label="Homebrew">
+
+```bash
+brew install pre-commit
+```
+
+  </TabItem>
+</Tabs>
+
+## Add a pre-commit configuration
+
+This configuration uses a custom script to encrypt files with SOPS before committing. The script will look for any files that match the pattern `*.tfvars` or `*.tfstate` and encrypt them using SOPS.
+
+Create a `.pre-commit-config.yaml` file in the root of your repository with the following content:
+
+```diff lang=yaml
+// .pre-commit-config.yaml
+
+repos:
+  - repo: local
+    hooks:
+      - id: sops-encrypt
+        name: Encrypt secrets to .enc files
+        entry: .pre-commit-sops.sh
+        language: script
+        pass_filenames: false # prevents empty list from breaking things
+        always_run: true # force it to run even if no files match
+        exclude: "" # override exclusions so it runs every time
+```
+
+## Create the custom pre-commit script
+
+Create a script named `.pre-commit-sops.sh` in the root of your repository with the following content:
+
+```diff lang=bash
+// .pre-commit-sops.sh
+
+#!/bin/bash
+set -euo pipefail
+
+# Array of file extensions to check
+FILE_EXTENTIONS=(
+  "*.tfvars"
+  "*.tfvars.json"
+  "*.tfstate"
+  "*.tfstate.backup"
+  ".env"
+)
+
+# Find all secret files (even if ignored), excluding already encrypted
+secret_files=$(find . \
+  -type f \
+  \( -name "${FILE_EXTENTIONS[0]}" \
+  -o -name "${FILE_EXTENTIONS[1]}" \
+  -o -name "${FILE_EXTENTIONS[2]}" \
+  -o -name "${FILE_EXTENTIONS[3]}" \
+  -o -name "${FILE_EXTENTIONS[4]}" \) \
+  ! -name "*.enc")
+
+# Track encrypted files to add after loop
+enc_files_to_add=()
+
+for filename in $secret_files; do
+    enc_file="${filename}.enc"
+
+    # Skip if already encrypted version exists
+    [[ -f "$enc_file" ]] && continue
+
+    # Skip if file already contains SOPS metadata
+    grep -q 'sops:' "$filename" && continue
+
+    # Encrypt and store output
+    sops --encrypt "$filename" > "$enc_file"
+    enc_files_to_add+=("$enc_file")
+done
+
+# Stage the new encrypted files
+if [ ${#enc_files_to_add[@]} -gt 0 ]; then
+    git add "${enc_files_to_add[@]}"
+fi
+```
+
+## Create the sops configuration file
+
+Create a `.sops.yaml` file in the root of your repository with the following content:
+
+```diff lang=yaml
+// .sops.yaml
+
+creation_rules:
+  # Encrypt .tfvars files (macOS only, used for provisioning)
+  - path_regex: \.tfvars(\.json)?$
+    encrypted_regex: "^(.*)$"
+    age: "age1xxxx..." # macOS
+
+  # Encrypt Terraform state and backups (macOS only)
+  - path_regex: \.tfstate(\.backup)?$
+    encrypted_regex: "^(.*)$"
+    age: "age1xxxx..." # macOS
+
+  # Encrypt .env files for Docker (used by NixOS)
+  - path_regex: \.env$
+    encrypted_regex: "^(.*)$"
+    age: age1xxxx...,age1yyyy...
+```
+
+## Install the git hook scripts
+
+Run the following command in the root of your repository to install the pre-commit hooks:
+
+```bash
+pre-commit install
+```
+
+This command will set up the pre-commit hooks in your `.git/hooks` directory. Now pre-commit will run automatically before each commit and encrypt any files that match the specified patterns.
+
+## Test the setup
+
+<Steps>
+  <ol>
+    <li>
+      Create a new file with the `.tfvars.json` extension, for example `test.tfvars.json`, and add some sensitive data to it.
+
+      ```json
+      {
+        "pm_api_url": "https://ip:port/api2/json",
+        "pm_api_token_id": "token",
+        "pm_api_token_secret": "secret"
+      }
+      ```
+    </li>
+    <li>
+      Run the following to stage the file:
+
+      ```bash
+      git add test.tfvars.json
+      ```
+    </li>
+    <li>
+      Commit the changes:
+
+      ```bash
+      git commit -m "Test commit"
+      ```
+
+      Example output:
+
+      ```bash
+      Encrypt secrets to .enc files............................................Passed
+      [main 18ea29c] Test commit
+       2 files changed, 22 insertions(+)
+       create mode 100644 test.tfvars.json
+       create mode 100644 test.tfvars.json.enc
+      ```
+    </li>
+    <li>
+      Check the repository to see if the `test.tfvars.json.enc` file was created.
+    </li>
+    <li>
+      Verify that the encrypted file contains encrypted data. It should look something like:
+
+      ```json
+      {
+        "pm_api_url": "ENC[AES256_GCM,data:...]",
+        "pm_api_token_id": "ENC[AES256_GCM,data:...]",
+        "pm_api_token_secret": "ENC[AES256_GCM,data:...]",
+        "sops": {
+          "age": [
+            {
+              "recipient": "age1w6th0yr0gp5...",
+              "enc": "-----BEGIN AGE ENCRYPTED FILE-----\n..."
+            }
+          ],
+          "lastmodified": "2025-05-17T20:53:08Z",
+          "mac": "ENC[AES256_GCM,data:...]",
+          "encrypted_regex": "^(.*)$",
+          "version": "3.10.2"
+        }
+      }
+      ```
+    </li>
+    <li>
+      Test the decryption process by running:
+
+      ```bash
+      sops decrypt --input-type json --output-type json test.tfvars.json.enc
+      ```
+
+      Output:
+
+      ```json
+      {
+        "pm_api_url": "https://ip:port/api2/json",
+        "pm_api_token_id": "token",
+        "pm_api_token_secret": "secret"
+      }
+      ```
+    </li>
+
+  </ol>
+</Steps>
+
+If everything works as expected, you can now use this setup to automatically encrypt sensitive files before committing them to the repository.
+
+---
+
+<details>
+  <summary>
+    <strong>References</strong>
+  </summary>
+
+  <ul>
+    <li><a href="https://www.geeksforgeeks.org/git-hooks/" target="_blank" rel="noopener noreferrer">Git - Hooks</a></li>
+    <li><a href="https://pre-commit.com/" target="_blank" rel="noopener noreferrer">pre-commit</a></li>
+  </ul>
+</details>

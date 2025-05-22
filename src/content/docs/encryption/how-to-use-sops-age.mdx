@@ -1,0 +1,263 @@
+---
+title: How to use SOPS + age
+description: "Securely encrypt sensitive files (e.g., *.tfvars, terraform.tfstate) for safe storage in Git and automation."
+sidebar:
+  order: 2
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+import { Icon } from "@astrojs/starlight/components";
+
+As we saw earlier, SOPS supports multiple formats and encryption backends. In this guide, we will focus on using SOPS with age for encrypting sensitive files like `*.tfvars`, `terraform.tfstate`, and other secrets.
+
+## Generate an age Key Pair
+
+<Tabs syncKey="operating-systems">
+  <TabItem label="Windows" icon="seti:windows">
+
+```powershell
+mkdir $env:APPDATA\sops\age
+age-keygen -o $env:APPDATA\sops\age\keys.txt
+```
+
+  </TabItem>
+  <TabItem label="macOS" icon="apple">
+
+```bash
+mkdir -p "$HOME/Library/Application Support/sops/age"
+age-keygen -o "$HOME/Library/Application Support/sops/age/keys.txt"
+```
+
+  </TabItem>
+  <TabItem label="Linux" icon="linux">
+
+```bash
+mkdir -p ~/.config/sops/age
+age-keygen -o ~/.config/sops/age/keys.txt
+```
+
+  </TabItem>
+</Tabs>
+
+Grab your public key:
+
+```bash
+grep public /path/to/keys.txt
+# public key: age1xxxx...
+```
+
+:::danger
+
+Share only the **public** key with collaborators.
+
+:::
+
+## Encrypting with sops
+
+There are multiple ways to encrypt a file using age with SOPS:
+
+### Using the age flag
+
+```bash
+sops -e --age age1xxxx...,age1yyyy... opentofu.auto.tfvars > opentofu.auto.tfvars.enc
+```
+
+This encrypts the file using the provided public age keys.
+
+### Using an environment variable
+
+```bash
+export SOPS_AGE_RECIPIENTS="age1xxxx...,age1yyyy..."
+sops -e opentofu.auto.tfvars > opentofu.auto.tfvars.enc
+```
+
+This is useful when scripting or storing your recipient key in an environment configuration.
+
+### Using sops config file
+
+You can also specify the recipient in a `.sops.yaml` file in your repository:
+
+```yaml
+creation_rules:
+  - path_regex: \.tfvars(\.json)?$
+    encrypted_regex: "^(.*)$"
+    age: "age1xxxx...,age1yyyy..."
+```
+
+Using `.sops.yaml` is best for projects as it avoids setting env variables or using the `age` flag, enabling consistent, automatic encryption config.
+
+:::warning[The encryption method may vary, based on the file format]
+
+When encrypting files, you need to specify the input type. This is crucial for SOPS to understand how to handle the file correctly.
+
+This is important to ensure that the file is encrypted correctly and can be decrypted later without issues.
+
+<Tabs syncKey="file-formats">
+  <TabItem label="BINARY">
+
+    For binary files, you can use the default command:
+
+    ```bash
+    sops encrypt opentofu.auto.tfvars > opentofu.auto.tfvars.enc
+    ```
+
+  </TabItem>
+  <TabItem label="JSON">
+
+    For JSON files, specify the input type as JSON:
+
+    ```bash
+    sops encrypt --input-type json opentofu.auto.tfvars.json > opentofu.auto.tfvars.json.enc
+    ```
+
+  </TabItem>
+  <TabItem label="YAML">
+
+    For YAML files, specify the input type as YAML:
+
+    ```bash
+    sops encrypt --input-type yaml secrets.yaml > secrets.yaml.enc
+    ```
+
+  </TabItem>
+  <TabItem label="ENV">
+
+    For environment variable files, specify the input type as dotenv:
+
+    ```bash
+    sops encrypt --input-type dotenv .env > .env.enc
+    ```
+
+  </TabItem>
+</Tabs>
+
+:::
+
+## Decrypting with sops
+
+### Basic usage examples
+
+#### View decrypted content:
+
+```bash
+sops -d opentofu.auto.tfvars.enc
+```
+
+#### Save decrypted file:
+
+```bash
+sops -d opentofu.auto.tfvars.enc > opentofu.auto.tfvars
+```
+
+:::warning[The decryption method may vary, based on the file format]
+
+When decrypting files, you need to specify the output type. This is crucial for SOPS to understand how to handle the file correctly.
+
+This is important to ensure that the file is decrypted correctly and can be used later without issues.
+
+<Tabs syncKey="file-formats">
+  <TabItem label="BINARY">
+
+    For binary files, you can use the default command:
+
+    ```bash
+    sops decrypt opentofu.auto.tfvars.enc > opentofu.auto.tfvars
+    ```
+
+  </TabItem>
+  <TabItem label="JSON">
+
+    For JSON files, specify the input and output type as JSON:
+
+    ```bash
+    sops decrypt --input-type json --output-type json opentofu.auto.tfvars.json.enc > opentofu.auto.tfvars.json
+    ```
+
+  </TabItem>
+  <TabItem label="YAML">
+
+    For YAML files, specify the input and output type as YAML:
+
+    ```bash
+    sops decrypt --input-type yaml --output-type yaml secrets.yaml.enc > secrets.yaml
+    ```
+
+  </TabItem>
+  <TabItem label="ENV">
+
+    For environment variable files, specify the input and output type as dotenv:
+
+    ```bash
+    sops decrypt --input-type dotenv --output-type dotenv .env.enc > .env
+    ```
+
+  </TabItem>
+</Tabs>
+
+:::
+
+## Bonus: Using SSH keys to encrypt/decrypt
+
+You can also use SSH keys for encryption and decryption. This is particularly useful if you already manage SSH keys for other purposes.
+
+### Encrypting with SSH keys
+
+```bash
+sops -e --age "$(cat ~/.ssh/id_ed25519.pub)" opentofu.auto.tfvars > opentofu.auto.tfvars.enc
+```
+
+:::note
+
+Only `ssh-ed25519` and `ssh-rsa` key types are supported for encryption using SSH keys.
+
+:::
+
+### Decrypting with SSH keys
+
+By default, SOPS will try to decrypt using the following SSH private keys (in order):
+
+- `~/.ssh/id_ed25519`
+- `~/.ssh/id_rsa`
+
+If your private key is stored in a custom location or if you manage multiple keys, you can explicitly specify which one to use:
+
+```bash
+export SOPS_AGE_SSH_PRIVATE_KEY_FILE=~/.ssh/id_rsa
+sops -d opentofu.auto.tfvars.enc > opentofu.auto.tfvars
+```
+
+:::tip[Tip for scripting or CI/CD]
+
+To avoid setting the environment variable separately, you can combine everything in one command:
+
+```bash
+SOPS_AGE_SSH_PRIVATE_KEY_FILE=~/.ssh/id_rsa sops -d opentofu.auto.tfvars.enc > opentofu.auto.tfvars
+```
+
+This is especially handy in scripts or continuous deployment pipelines.
+
+:::
+
+## Best Practices
+
+- Never commit decrypted files (`*.tfvars`, `*.tfstate`, `secrets.json`, `secrets.yaml`, `.env` etc.)
+- Use `.gitignore` to exclude them
+- Always encrypt before pushing
+- Share only the public key
+- Store private keys securely (e.g., in a password manager or vault)
+
+---
+
+<details>
+  <summary>
+    <strong>References</strong>
+  </summary>
+
+  <ul>
+    <li><a href="https://github.com/getsops/sops?tab=readme-ov-file#encrypting-using-age" target="_blank" rel="noopener noreferrer">Using age with SOPS</a></li>
+    <li><a href="https://technotim.live/posts/secret-encryption-sops/" target="_blank" rel="noopener noreferrer">Encrypting with Mozilla SOPS and AGE</a></li>
+    <li><a href="https://www.youtube.com/watch?v=wqD7k5iNvqs" target="_blank" rel="noopener noreferrer">Encrypting Secrets The GitOps Way With sops And age (YouTube)</a></li>
+    <li><a href="https://blog.stephane-robert.info/docs/securiser/secrets/sops/" target="_blank" rel="noopener noreferrer">Protégez vos secrets DevOps avec SOPS (FR)</a></li>
+    <li><a href="https://une-tasse-de.cafe/blog/sops/" target="_blank" rel="noopener noreferrer">Stocker des secrets dans un dépôt Git (FR)</a></li>
+  </ul>
+</details>

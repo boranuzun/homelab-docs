@@ -1,0 +1,134 @@
+---
+title: "Why Encrypt Secrets: An Introduction to SOPS and age"
+description: "Learn why secrets encryption matters and how to manage them with SOPS and age."
+sidebar:
+  order: 1
+  label: Introduction to encryption
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+import { Icon } from "@astrojs/starlight/components";
+
+In modern software development and infrastructure automation, secrets like API tokens, database credentials, and cloud provider keys are essential but highly sensitive. Exposing these secrets in plaintext (whether in source code, CI/CD pipelines, or infrastructure files) is a major security risk and a common cause of data breaches.
+
+As part of a **DevSecOps** approach, where security is integrated throughout the development lifecycle, **encrypting secrets** is not optional. It's a foundational practice for protecting systems, ensuring compliance, and avoiding operational disasters.
+
+This is where tools like **SOPS** and **age** come in. They help you encrypt and manage secrets in a way that’s secure, auditable, and compatible with modern GitOps and DevOps workflows.
+
+## What is SOPS?
+
+[SOPS](https://github.com/getsops/sops) (Secrets OPerationS) is a tool developed by Mozilla for managing encrypted files, particularly useful for securing sensitive data such as `.env`, `.tfvars`, and `.tfstate`. It supports multiple structured formats including YAML, JSON, INI, ENV, as well as BINARY data. SOPS integrates smoothly into Git workflows, making it easy to version-control encrypted secrets and state alongside your infrastructure code.
+
+## What is age?
+
+[age](https://github.com/FiloSottile/age) is a simple, modern, and secure encryption tool designed to replace GPG. It's fast, easy to use, and built with strong cryptographic principles.
+
+## Why use SOPS with age?
+
+By default, SOPS supports multiple encryption backends including AWS KMS, GCP KMS, Azure Key Vault, age, and PGP. I chose age because:
+
+- It’s significantly simpler and safer than managing PGP keys.
+- It’s fast and script-friendly.
+- It requires minimal configuration.
+
+## Installation
+
+<Tabs syncKey="operating-systems">
+  <TabItem label="Windows" icon="seti:windows">
+
+Download using [winget](https://learn.microsoft.com/fr-fr/windows/package-manager/winget/)
+
+```powershell
+winget install -e --id FiloSottile.age
+winget install -e --id Mozilla.SOPS
+```
+
+Alternatively, use [Scoop](https://scoop.sh/)
+
+```powershell
+scoop bucket add extras
+scoop install extras/age
+
+scoop bucket add main
+scoop install main/sops
+```
+
+  </TabItem>
+  <TabItem label="macOS" icon="apple">
+
+```bash
+brew install age sops
+```
+
+  </TabItem>
+  <TabItem label="Linux" icon="linux">
+
+```bash
+sudo apt install age
+curl -fsSL https://github.com/mozilla/sops/releases/download/v3.10.2/sops-v3.10.2.linux.amd64 -o /usr/local/bin/sops
+chmod +x /usr/local/bin/sops
+```
+
+  </TabItem>
+</Tabs>
+
+## Where SOPS Looks for Keys
+
+When decrypting, SOPS looks for a file called `keys.txt` containing your private age key. Its default search location depends on the operating system:
+
+<Tabs syncKey="operating-systems">
+  <TabItem label="Windows" icon="seti:windows">
+
+    `%AppData%\sops\age\keys.txt`
+
+  </TabItem>
+  <TabItem label="macOS" icon="apple">
+
+    `$HOME/Library/Application Support/sops/age/keys.txt`
+
+  </TabItem>
+  <TabItem label="Linux" icon="linux">
+
+    `$XDG_CONFIG_HOME/sops/age/keys.txt`
+
+    fallback: `$HOME/.config/sops/age/keys.txt`
+
+  </TabItem>
+</Tabs>
+
+## Overriding the Default Lookup
+
+- `SOPS_AGE_KEY_FILE` - the path pointing to your private key, used by sops to decrypt your file
+
+```bash
+export SOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt
+```
+
+- `SOPS_AGE_RECIPIENTS` - specifies the list of public keys used for encryption, separated by commas
+
+```bash
+export SOPS_AGE_RECIPIENTS="age1xxxx...,age2xxxx..."
+```
+
+These are particularly useful for CI pipelines or non-standard setups.
+
+:::tip
+
+These can be added to `.bashrc`, `.zshrc`, or `.envrc`
+
+:::
+
+---
+
+<details>
+  <summary>
+    <strong>References</strong>
+  </summary>
+
+  <ul>
+    <li><a href="https://getsops.io/" target="_blank" rel="noopener noreferrer">SOPS: Simple And Flexible Tool For Managing Secrets</a></li>
+    <li><a href="https://www.youtube.com/watch?v=wqD7k5iNvqs" target="_blank" rel="noopener noreferrer">Encrypting Secrets The GitOps Way With sops And age (YouTube)</a></li>
+    <li><a href="https://blog.stephane-robert.info/docs/securiser/secrets/sops/" target="_blank" rel="noopener noreferrer">Protégez vos secrets DevOps avec SOPS (FR)</a></li>
+    <li><a href="https://une-tasse-de.cafe/blog/sops/" target="_blank" rel="noopener noreferrer">Stocker des secrets dans un dépôt Git (FR)</a></li>
+  </ul>
+</details>

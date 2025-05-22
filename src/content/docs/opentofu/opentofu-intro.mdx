@@ -1,0 +1,44 @@
+---
+title: Introducing OpenTofu
+description: "An introduction to OpenTofu and the rationale behind migrating from Terraform."
+sidebar:
+  order: 1
+---
+
+[OpenTofu](https://opentofu.org/) is an open-source infrastructure-as-code (IaC) tool that allows you to define and provision infrastructure using a declarative configuration language. It is a community-driven fork of Terraform, created in response to [HashiCorp's decision to change Terraform's license from open source (MPL 2.0) to the Business Source License (BSL).](https://www.hashicorp.com/fr/license-faq)
+
+OpenTofu aims to be a **drop-in replacement** for Terraform, continuing the spirit of open collaboration while ensuring long-term sustainability and freedom for the community.
+
+:::tip
+
+If you're already using Terraform, you can switch to OpenTofu with minimal changes. Most `.tf` files and provider configurations work out of the box.
+
+:::
+
+## Why I Chose OpenTofu Instead of Terraform
+
+There are a few reasons why I decided to go with OpenTofu:
+
+### 1. **Truly Open Source**
+
+Terraform's move to BSL created uncertainty for many in the community. OpenTofu stays under an open source license (MPL 2.0), which means:
+
+- No vendor lock-in
+- Guaranteed freedom to fork, extend, or use the tool commercially
+- Transparency and trust in governance
+
+### 2. **Community-Driven Development**
+
+OpenTofu is governed by the [Linux Foundation](https://www.linuxfoundation.org/) with contributors from across the ecosystem, not just a single company. This means decisions are made with the community's best interest in mind.
+
+### 3. **Compatibility and Continuity**
+
+At the time of writing, OpenTofu is compatible with Terraform v1.5, and the team is working on advancing features without breaking backward compatibility. This ensures a smooth transition without rewriting existing infrastructure code.
+
+### 4. **Long-Term Vision**
+
+The OpenTofu team has a public [roadmap](https://github.com/opentofu/opentofu/milestones) that reflects a commitment to transparency, innovation, and keeping the tool open and collaborative for the long haul.
+
+## In Summary
+
+If you're looking for a stable, open, and community-focused alternative to Terraform, OpenTofu is worth serious consideration. It reflects the values that made Terraform successful in the first place, while steering clear of restrictive licensing changes.

@@ -1,36 +1,37 @@
 ---
-title: Welcome to Starlight
+title: "👋🏼 Welcome to homelab-docs"
 description: Get started building your docs site with Starlight.
-template: splash
-hero:
-  title: |
-    Welcome to Starlight with
-    <span
-      class="font-black text-transparent
-        bg-clip-text bg-gradient-to-b
-        from-accent-700 to-accent-400
-        dark:from-accent-500 dark:to-accent-200"
-    >
-      Tailwind
-    </span>
-  tagline: Congrats on setting up a new Starlight project!
-  image:
-    file: ../../assets/houston.webp
-  actions:
-    - text: Example Guide
-      link: /guides/example/
-      icon: right-arrow
-    - text: Read the Starlight docs
-      link: https://starlight.astro.build
-      icon: external
-      variant: minimal
+template: doc
+editUrl: false
+# hero:
+#   title: |
+#     Welcome to Starlight with
+#     <span
+#       class="font-black text-transparent
+#         bg-clip-text bg-gradient-to-b
+#         from-accent-700 to-accent-400
+#         dark:from-accent-500 dark:to-accent-200"
+#     >
+#       Tailwind
+#     </span>
+#   tagline: Congrats on setting up a new Starlight project!
+#   image:
+#     file: ../../assets/houston.webp
+#   actions:
+#     - text: Get started
+#       link: /introduction/intro/
+#       icon: right-arrow
+#     - text: Read the Starlight docs
+#       link: https://starlight.astro.build
+#       icon: external
+#       variant: minimal
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+{/* // import { Card, CardGrid } from '@astrojs/starlight/components'; */}
 
-## Next steps
+{/* ## Next steps */}
 
-<CardGrid stagger>
+{/* <CardGrid stagger>
 	<Card title="Update content" icon="pencil">
 		Edit `src/content/docs/index.mdx` to see this page change.
 	</Card>
@@ -43,4 +44,38 @@ import { Card, CardGrid } from '@astrojs/starlight/components';
 	<Card title="Read the docs" icon="open-book">
 		Learn more in [the Starlight Docs](https://starlight.astro.build/).
 	</Card>
-</CardGrid>
+</CardGrid> */}
+
+This is the technical documentation site for my **Bachelor’s thesis project** at the [Haute école de gestion de Genève](https://www.hesge.ch/heg).
+
+The project focuses on building a reproducible, automated infrastructure using **Infrastructure as Code (IaC)** practices and tools. The goal is to create a **homelab** environment that is easy to manage, secure, and scalable.
+
+---
+
+## What You'll Find Here
+
+This site documents the tools, processes, and architecture I use to:
+
+- Build a **NixOS-based virtual machine** on **Proxmox**
+- Configure and manage infrastructure with **OpenTofu**
+- Secure secrets using **SOPS + age**
+- Automate deployments with **GitHub Actions**
+- Run useful services in **Docker containers**
+
+All configuration is **written as code**, versioned in Git, and fully reproducible.
+
+---
+
+## Start Exploring
+
+{/* prettier-ignore */}
+{/* [MD links temporarily disabled]
+
+- [Project Introduction](docs/intro)
+- [OpenTofu](docs/category/opentofu)
+- [SOPS + age](docs/opentofu/sops)
+- [NixOS Configuration](docs/category/nixos)
+- [Git Hooks for automatic encryption](docs/git-hooks)
+- [CI/CD with GitHub Actions](docs/ci-cd) \*/}
+
+Thanks for visiting — and feel free to dig into the code, ideas, and tools powering this homelab journey!
