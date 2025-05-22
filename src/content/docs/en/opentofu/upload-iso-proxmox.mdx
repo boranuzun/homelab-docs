@@ -12,9 +12,13 @@ import { Steps } from "@astrojs/starlight/components";
 <Steps>
 
 1. Go to the [NixOS download page](https://nixos.org/download/). Or follow this [link](https://channels.nixos.org/nixos-24.11/latest-nixos-minimal-x86_64-linux.iso) to directly download the latest minimal iso image (64-bit Intel/AMD).
+
 2. Choose the appropriate version (e.g., `64-bit Intel/AMD`) and download it.
+
 3. Save the ISO file to a location on your local machine.
+
 4. Verify the checksum of the downloaded ISO file to ensure its integrity. You can find the checksums on the NixOS download page or you can follow this [link](https://channels.nixos.org/nixos-24.11/latest-nixos-minimal-x86_64-linux.iso.sha256).
+
 5. Use the following command to verify the checksum:
 
    ```bash
@@ -32,6 +36,7 @@ import { Steps } from "@astrojs/starlight/components";
    ```
 
 7. If they match, the ISO file is valid.
+
 8. If they don't match, re-download the ISO file and verify again.
 
 </Steps>
@@ -49,9 +54,13 @@ Alternatively you can follow this guide on how to upload the ISO image directly 
 <Steps>
 
 1. Select your desired storage (e.g., `local`) in the Proxmox web interface.
+
 2. Click on `ISO Images` in the left sidebar.
+
 3. Click on the `Upload` button in the top left corner.
+
 4. In the upload dialog, select the NixOS ISO file you downloaded earlier.
+
 5. Click `Upload` to start the upload process.
 
 </Steps>

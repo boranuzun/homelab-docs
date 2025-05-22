@@ -8,6 +8,10 @@ sidebar:
 import { Tabs, TabItem } from "@astrojs/starlight/components";
 import { Icon } from "@astrojs/starlight/components";
 import { Steps } from "@astrojs/starlight/components";
+import { Code } from "@astrojs/starlight/components";
+
+import encryptedJson from "./encryptedJson.json?raw";
+export const fileName = "test.tfvars.json.enc";
 
 ## Why use a Git hook?
 
@@ -146,7 +150,8 @@ This command will set up the pre-commit hooks in your `.git/hooks` directory. No
     <li>
       Create a new file with the `.tfvars.json` extension, for example `test.tfvars.json`, and add some sensitive data to it.
 
-      ```json
+      ```diff lang=json
+      // test.tfvars.json
       {
         "pm_api_url": "https://ip:port/api2/json",
         "pm_api_token_id": "token",
@@ -170,8 +175,8 @@ This command will set up the pre-commit hooks in your `.git/hooks` directory. No
 
       Example output:
 
-      ```bash
-      Encrypt secrets to .enc files............................................Passed
+      ```bash frame="none"
+      Encrypt secrets to .enc files.......................Passed
       [main 18ea29c] Test commit
        2 files changed, 22 insertions(+)
        create mode 100644 test.tfvars.json
@@ -184,25 +189,7 @@ This command will set up the pre-commit hooks in your `.git/hooks` directory. No
     <li>
       Verify that the encrypted file contains encrypted data. It should look something like:
 
-      ```json
-      {
-        "pm_api_url": "ENC[AES256_GCM,data:...]",
-        "pm_api_token_id": "ENC[AES256_GCM,data:...]",
-        "pm_api_token_secret": "ENC[AES256_GCM,data:...]",
-        "sops": {
-          "age": [
-            {
-              "recipient": "age1w6th0yr0gp5...",
-              "enc": "-----BEGIN AGE ENCRYPTED FILE-----\n..."
-            }
-          ],
-          "lastmodified": "2025-05-17T20:53:08Z",
-          "mac": "ENC[AES256_GCM,data:...]",
-          "encrypted_regex": "^(.*)$",
-          "version": "3.10.2"
-        }
-      }
-      ```
+      <Code code={encryptedJson} lang="json" title={fileName} />
     </li>
     <li>
       Test the decryption process by running:
@@ -213,7 +200,7 @@ This command will set up the pre-commit hooks in your `.git/hooks` directory. No
 
       Output:
 
-      ```json
+      ```json 
       {
         "pm_api_url": "https://ip:port/api2/json",
         "pm_api_token_id": "token",

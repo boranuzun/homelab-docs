@@ -7,26 +7,42 @@ import starlightScrollToTop from "starlight-scroll-to-top";
 
 // https://astro.build/config
 export default defineConfig({
+  site: "https://boranuzun.github.io",
+  base: "homelab-test",
   integrations: [
     starlight({
-      title: "",
+      title: "homelab-docs",
       logo: {
+        replacesTitle: true,
         light: "./src/assets/homelab-light.svg",
         dark: "./src/assets/homelab-dark.svg",
       },
       favicon: "/images/favicon.svg",
-      //   defaultLocale: "en",
-      //   locales: {
-      //     // English docs in `src/content/docs/en/`
-      //     en: {
-      //       label: "English",
-      //     },
-      //     // French docs in `src/content/docs/fr/`
-      //     fr: {
-      //       label: "French",
-      //       lang: "fr",
-      //     },
-      //   },
+      head: [
+        // Ajouter une icône ICO de secours pour Safari.
+        {
+          tag: "link",
+          attrs: {
+            rel: "icon",
+            href: "/images/favicon.ico",
+            sizes: "32x32",
+          },
+        },
+      ],
+      tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 5 },
+      lastUpdated: true,
+      defaultLocale: "en",
+      locales: {
+        // English docs in `src/content/docs/en/`
+        en: {
+          label: "English",
+        },
+        // French docs in `src/content/docs/fr/`
+        fr: {
+          label: "French",
+          lang: "fr",
+        },
+      },
       expressiveCode: {
         // https://expressive-code.com/guides/themes/
         // themes: ["dracula", "starlight-light"],
@@ -64,8 +80,8 @@ export default defineConfig({
         starlightScrollToTop({
           tooltipText: "Back to top",
           showTooltip: true,
-          threshold: 30,
-          svgPath: "M12 4L7 9H9V16H15V9H17L12 4M10 16L12 20L14 16",
+          svgPath: "M5 15L12 8L19 15",
+          borderRadius: "25",
         }),
       ],
     }),

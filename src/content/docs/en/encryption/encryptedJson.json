@@ -1,0 +1,17 @@
+{
+  "pm_api_url": "ENC[AES256_GCM,data:...]",
+  "pm_api_token_id": "ENC[AES256_GCM,data:...]",
+  "pm_api_token_secret": "ENC[AES256_GCM,data:...]",
+  "sops": {
+    "age": [
+      {
+        "recipient": "age1w6th0yr0gp5...",
+        "enc": "-----BEGIN AGE ENCRYPTED FILE-----\n..."
+      }
+    ],
+    "lastmodified": "2025-05-17T20:53:08Z",
+    "mac": "ENC[AES256_GCM,data:...]",
+    "encrypted_regex": "^(.*)$",
+    "version": "3.10.2"
+  }
+}

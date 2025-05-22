@@ -77,7 +77,8 @@ This is useful when scripting or storing your recipient key in an environment co
 
 You can also specify the recipient in a `.sops.yaml` file in your repository:
 
-```yaml
+```diff lang=yaml
+// .sops.yaml
 creation_rules:
   - path_regex: \.tfvars(\.json)?$
     encrypted_regex: "^(.*)$"
