@@ -103,9 +103,29 @@ export default defineConfig({
           fr: "fr-FR",
         },
       },
-      // Make sure the URLs are properly filtered
+      // Custom serialize function to fix malformed URLs
+      serialize: (item) => {
+        // Remove duplicate base URLs from malformed URLs
+        let cleanUrl = item.url;
+        const baseUrl = "https://boranuzun.github.io/homelab-test/";
+
+        // Fix URLs that have the base URL duplicated
+        if (cleanUrl.includes(baseUrl + "https://")) {
+          cleanUrl = cleanUrl.replace(
+            baseUrl + "https://boranuzun.github.io/homelab-test/",
+            baseUrl
+          );
+        }
+
+        return {
+          url: cleanUrl,
+          changefreq: item.changefreq,
+          lastmod: item.lastmod,
+          priority: item.priority,
+        };
+      },
+      // Filter out malformed URLs
       filter: (page) => {
-        // Filter out 404 pages and any malformed URLs
         return (
           !page.includes("/404") &&
           page.startsWith("https://boranuzun.github.io/homelab-test/")
