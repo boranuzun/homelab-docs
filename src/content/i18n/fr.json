@@ -32,7 +32,6 @@
   "expressiveCode.copyButtonTooltip": "Copier le code",
   "expressiveCode.terminalWindowFallbackTitle": "Fenêtre de terminal",
 
-  
   "docsearch.searchBox.resetButtonTitle": "Effacer la requête",
   "docsearch.searchBox.resetButtonAriaLabel": "Effacer la requête",
   "docsearch.searchBox.cancelButtonText": "Annuler",
@@ -46,22 +45,20 @@
   "docsearch.startScreen.favoriteSearchesTitle": "Favoris",
   "docsearch.startScreen.removeFavoriteSearchButtonTitle": "Supprimer des favoris",
 
-  "docsearch.errorScreen.titleText": "Unable to fetch results",
-  "docsearch.errorScreen.helpText": "You might want to check your network connection.",
+  "docsearch.errorScreen.titleText": "Impossible de récupérer les résultats",
+  "docsearch.errorScreen.helpText": "Vérifiez votre connexion Internet et réessayez.",
 
-  "docsearch.footer.selectText": "to select",
-  "docsearch.footer.selectKeyAriaLabel": "Enter key",
-  "docsearch.footer.navigateText": "to navigate",
-  "docsearch.footer.navigateUpKeyAriaLabel": "Arrow up",
-  "docsearch.footer.navigateDownKeyAriaLabel": "Arrow down",
-  "docsearch.footer.closeText": "to close",
-  "docsearch.footer.closeKeyAriaLabel": "Escape key",
-  "docsearch.footer.searchByText": "Search by",
+  "docsearch.footer.selectText": "pour sélectionner",
+  "docsearch.footer.selectKeyAriaLabel": "Touche entrée",
+  "docsearch.footer.navigateText": "pour naviguer",
+  "docsearch.footer.navigateUpKeyAriaLabel": "Flèche haut",
+  "docsearch.footer.navigateDownKeyAriaLabel": "Flèche bas",
+  "docsearch.footer.closeText": "pour fermer",
+  "docsearch.footer.closeKeyAriaLabel": "Touche d'échappement",
+  "docsearch.footer.searchByText": "Recherche par",
 
   "docsearch.noResultsScreen.noResultsText": "Aucun résultat trouvé pour",
-  "docsearch.noResultsScreen.suggestedQueryText": "Try searching for",
-  "docsearch.noResultsScreen.reportMissingResultsText": "Believe this query should return results?",
-  "docsearch.noResultsScreen.reportMissingResultsLinkText": "Let us know."
-
+  "docsearch.noResultsScreen.suggestedQueryText": "Essayer une autre requête",
+  "docsearch.noResultsScreen.reportMissingResultsText": "Vous pensez qu'il manque des résultats?",
+  "docsearch.noResultsScreen.reportMissingResultsLinkText": "Signaler un problème"
 }
-

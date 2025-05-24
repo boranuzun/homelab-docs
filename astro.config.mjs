@@ -101,6 +101,11 @@ export default defineConfig({
           svgPath: "M5 15L12 8L19 15",
           borderRadius: "25",
         }),
+        starlightDocSearch({
+          appId: "4Y838HGCJW",
+          apiKey: "8719430c9c01ad3075584f20f8b04d76",
+          indexName: "boranuzunio",
+        }),
         // starlightLinksValidator(),
       ],
     }),
@@ -144,13 +149,6 @@ export default defineConfig({
     icon(),
   ],
   vite: {
-    plugins: [
-      tailwindcss(),
-      starlightDocSearch({
-        appId: "4Y838HGCJW",
-        apiKey: "8719430c9c01ad3075584f20f8b04d76",
-        indexName: "boranuzunio",
-      }),
-    ],
+    plugins: [tailwindcss()],
   },
 });
