@@ -21,14 +21,14 @@ export default defineConfig({
         light: "./src/assets/homelab-light.svg",
         dark: "./src/assets/homelab-dark.svg",
       },
-      favicon: "/images/favicon.svg",
+      favicon: "/favicon.svg",
       head: [
         // Ajouter une icône ICO de secours pour Safari.
         {
           tag: "link",
           attrs: {
             rel: "icon",
-            href: "/images/favicon.ico",
+            href: "/favicon.ico",
             sizes: "32x32",
           },
         },
