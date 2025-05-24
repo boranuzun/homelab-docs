@@ -1,11 +1,14 @@
 ---
-title: Introduction
-description: An introduction to the project and its objectives.
+title: "Introduction"
+description: Documentation for my Bachelor's thesis project at the Haute école de gestion de Genève.
+template: doc
+editUrl: false
+tableOfContents: true
 ---
 
-This documentation site was created as part of my Bachelor's thesis at the **[Haute école de gestion de Genève](https://www.hesge.ch/heg/)**. The project is titled:
+This is the technical documentation site for my **Bachelor's thesis project** at the [Haute école de gestion de Genève](https://www.hesge.ch/heg). The project is titled:
 
-> **Conception et déploiement automatisé d’un Operating System as Code à l’aide de pratiques Infrastructure as Code.**
+> **Conception et déploiement automatisé d'un Operating System as Code à l'aide de pratiques Infrastructure as Code.**
 
 ## Main Objective
 
@@ -18,9 +21,21 @@ The aim of this project is to design and automate the deployment of a personal *
 | **Maintainable**       | Make updates and fixes easier to apply and track                 |
 | **Secure**             | Sensitive data is encrypted and managed properly                 |
 
-To apply these principles, I’m building a personal **homelab** environment using a **NixOS** virtual machine hosted on a **Proxmox** hypervisor. This VM provides a platform for deploying and managing services using declarative and automated workflows.
+## What You'll Find Here
 
-On this VM, I will deploy several containerized services, including:
+This site documents the tools, processes, and architecture I use to:
+
+- Build a **NixOS-based virtual machine** on **Proxmox**
+- Configure and manage infrastructure with **OpenTofu**
+- Secure secrets using **SOPS + age**
+- Automate deployments with **GitHub Actions**
+- Run useful services in **Docker containers**
+
+All configuration is **written as code**, versioned in Git, and fully reproducible.
+
+## Services and Architecture
+
+The homelab environment is built on a **NixOS** virtual machine hosted on a **Proxmox** hypervisor. This VM provides a platform for deploying and managing several containerized services, including:
 
 - **[Tailscale](https://tailscale.com)** — private mesh VPN
 - **[AdGuard Home](https://adguard.com/en/adguard-home/overview.html)** — DNS-level ad and tracker blocking
@@ -28,17 +43,6 @@ On this VM, I will deploy several containerized services, including:
 - **[Traefik](https://traefik.io)** — reverse proxy
 - **[Uptime Kuma](https://github.com/louislam/uptime-kuma)** — uptime monitoring
 - **[Watchtower](https://github.com/containrrr/watchtower)** — automatic container updates
-
-## Tools and Technologies
-
-Here’s a non-exhaustive list of tools and technologies involved:
-
-- **OpenTofu** — Terraform-compatible open-source IaC tool
-- **Proxmox** — Virtualization platform for managing VMs
-- **NixOS** — Declarative and reproducible Linux distribution
-- **SOPS + age** — Secure and versioned secrets management
-- **GitHub Actions** — CI/CD automation for deployment pipelines
-- **Docker Compose** — Tool for defining and running multi-container Docker applications
 
 ---
 

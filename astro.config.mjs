@@ -34,11 +34,12 @@ export default defineConfig({
       ],
       tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 5 },
       lastUpdated: true,
-      defaultLocale: "en",
+      defaultLocale: "root",
       locales: {
         // English docs in `src/content/docs/en/`
-        en: {
+        root: {
           label: "English",
+          lang: "en",
         },
         // French docs in `src/content/docs/fr/`
         fr: {
@@ -64,10 +65,9 @@ export default defineConfig({
         },
       ],
       sidebar: [
-        { label: "Welcome", link: "/", translations: {} },
         {
           label: "Introduction",
-          autogenerate: { directory: "introduction" },
+          link: "intro/",
         },
         {
           label: "Encryption",
