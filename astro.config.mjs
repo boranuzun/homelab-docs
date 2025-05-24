@@ -2,8 +2,11 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import tailwindcss from "@tailwindcss/vite";
+import sitemap from "@astrojs/sitemap";
 import starlightImageZoom from "starlight-image-zoom";
+// import starlightLinksValidator from "starlight-links-validator";
 import starlightScrollToTop from "starlight-scroll-to-top";
+import icon from "astro-icon";
 
 // https://astro.build/config
 export default defineConfig({
@@ -43,6 +46,10 @@ export default defineConfig({
           lang: "fr",
         },
       },
+      components: {
+        // Header: "./src/components/CustomHeader.astro",
+        ThemeSelect: "./src/components/CustomThemeSelect.astro",
+      },
       expressiveCode: {
         // https://expressive-code.com/guides/themes/
         // themes: ["dracula", "starlight-light"],
@@ -56,6 +63,7 @@ export default defineConfig({
         },
       ],
       sidebar: [
+        { label: "Welcome", link: "/", translations: {} },
         {
           label: "Introduction",
           autogenerate: { directory: "introduction" },
@@ -83,8 +91,19 @@ export default defineConfig({
           svgPath: "M5 15L12 8L19 15",
           borderRadius: "25",
         }),
+        // starlightLinksValidator(),
       ],
     }),
+    sitemap({
+      i18n: {
+        defaultLocale: "en",
+        locales: {
+          en: "en-US",
+          fr: "fr-FR",
+        },
+      },
+    }),
+    icon(),
   ],
   vite: {
     plugins: [tailwindcss()],

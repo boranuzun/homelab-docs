@@ -4,6 +4,7 @@
 @import "@astrojs/starlight-tailwind";
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities);
+@import "tailwindcss";
 
 @theme {
   /*
@@ -20,7 +21,7 @@
   /* Replace default heading font with Unbounded */
   --font-heading: "Unbounded", sans-serif;
 
-  /* Your preferred accent color. Indigo is closest to Starlight’s defaults. */
+  /* Your preferred accent color. Indigo is closest to Starlight's defaults. */
   --color-accent-50: var(--color-indigo-50);
   --color-accent-100: var(--color-indigo-100);
   --color-accent-200: var(--color-indigo-200);
@@ -33,7 +34,7 @@
   --color-accent-900: var(--color-indigo-900);
   --color-accent-950: var(--color-indigo-950);
 
-  /* Your preferred gray scale. Zinc is closest to Starlight’s defaults. */
+  /* Your preferred gray scale. Zinc is closest to Starlight's defaults. */
   --color-gray-50: var(--color-zinc-50);
   --color-gray-100: var(--color-zinc-100);
   --color-gray-200: var(--color-zinc-200);
