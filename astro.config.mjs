@@ -77,6 +77,14 @@ export default defineConfig({
           label: "OpenTofu",
           autogenerate: { directory: "opentofu" },
         },
+        {
+          label: "NixOS",
+          autogenerate: { directory: "nixos" },
+        },
+        {
+          label: "Containers",
+          autogenerate: { directory: "containers" },
+        },
       ],
       customCss: ["./src/styles/global.css"],
       editLink: {

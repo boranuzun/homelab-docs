@@ -1,0 +1,46 @@
+---
+title: "Introduction"
+description: "Documentation pour mon projet de mémoire de Bachelor à la Haute école de gestion de Genève."
+---
+
+Ceci est le site de documentation technique pour mon **projet de mémoire de Bachelor** à la [Haute école de gestion de Genève](https://www.hesge.ch/heg). Le projet est intitulé :
+
+> **Conception et déploiement automatisé d'un Operating System as Code à l'aide de pratiques Infrastructure as Code.**
+
+## Objectif principal
+
+L'objectif de ce projet est de concevoir et d'automatiser le déploiement d'un serveur **homelab** personnel en appliquant des pratiques modernes telles que **Infrastructure as Code (IaC)**, **GitOps**, et **DevSecOps**. Cette approche garantit que la configuration de l'infrastructure est :
+
+| Principe              | Description                                                      |
+| ---------------------- | ---------------------------------------------------------------- |
+| **Versionnée**         | Tous les changements sont suivis dans Git et poussés vers un dépôt distant |
+| **Reproductible**      | Les systèmes peuvent être reconstruits de manière fiable à partir de la même source |
+| **Maintenable**        | Facilite les mises à jour et les corrections à appliquer et à suivre |
+| **Sécurisée**          | Les données sensibles sont chiffrées et gérées correctement     |
+
+## Ce que vous trouverez ici
+
+Ce site documente les outils, les processus et l'architecture que j'utilise pour :
+
+- Construire une **machine virtuelle basée sur NixOS** sur **Proxmox**
+- Configurer et gérer l'infrastructure avec **OpenTofu**.
+- Sécuriser les secrets en utilisant **SOPS + age**
+- Automatiser les déploiements avec **GitHub Actions**
+- Exécuter des services utiles dans des **conteneurs Docker**
+
+Toute la configuration est **écrite comme du code**, versionnée dans Git, et entièrement reproductible.
+
+## Services et architecture
+
+L'environnement homelab est construit sur une machine virtuelle **NixOS** hébergée sur un hyperviseur **Proxmox**. Cette VM fournit une plateforme pour déployer et gérer plusieurs services conteneurisés, y compris :
+
+- **[Tailscale](https://tailscale.com)** - VPN privé maillé
+- **[AdGuard Home](https://adguard.com/en/adguard-home/overview.html)** - blocage des publicités et des traqueurs au niveau DNS
+- **[Homepage](https://github.com/gethomepage/homepage)** - tableau de bord des services
+- **[Traefik](https://traefik.io)** - proxy inverse
+- **[Uptime Kuma](https://github.com/louislam/uptime-kuma)** - surveillance de l'état de disponibilité des services
+- **[Watchtower](https://github.com/containrrr/watchtower)** - mises à jour automatiques des conteneurs
+
+---
+
+Cette documentation sert de **référence technique** tout au long du projet et peut servir à d'autres étudiants ou professionnels qui explorent la conception d'une infrastructure reproductible et pilotée par le code.
