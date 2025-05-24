@@ -11,7 +11,7 @@ import icon from "astro-icon";
 // https://astro.build/config
 export default defineConfig({
   site: "https://boranuzun.github.io",
-  base: "homelab-test",
+  base: "/homelab-test/",
   integrations: [
     starlight({
       title: "homelab-docs",
@@ -48,6 +48,7 @@ export default defineConfig({
       },
       components: {
         // Header: "./src/components/CustomHeader.astro",
+        // LanguageSelect: "./src/components/CustomLanguageSelect.astro",
         ThemeSelect: "./src/components/CustomThemeSelect.astro",
       },
       expressiveCode: {
@@ -101,6 +102,14 @@ export default defineConfig({
           en: "en-US",
           fr: "fr-FR",
         },
+      },
+      // Make sure the URLs are properly filtered
+      filter: (page) => {
+        // Filter out 404 pages and any malformed URLs
+        return (
+          !page.includes("/404") &&
+          page.startsWith("https://boranuzun.github.io/homelab-test/")
+        );
       },
     }),
     icon(),

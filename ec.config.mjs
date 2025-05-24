@@ -7,6 +7,10 @@ export default {
   defaultProps: {
     // Disable line numbers by default
     showLineNumbers: false,
+    
+    // Enable word wrap by default
+    // wrap: true,
+
     // But enable line numbers for certain languages
     overridesByLang: {
       "js,ts,html,yaml,json": {
