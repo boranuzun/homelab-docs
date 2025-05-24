@@ -3,6 +3,7 @@ import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import tailwindcss from "@tailwindcss/vite";
 import sitemap from "@astrojs/sitemap";
+import starlightDocSearch from "@astrojs/starlight-docsearch";
 import starlightImageZoom from "starlight-image-zoom";
 // import starlightLinksValidator from "starlight-links-validator";
 import starlightScrollToTop from "starlight-scroll-to-top";
@@ -11,7 +12,7 @@ import icon from "astro-icon";
 // https://astro.build/config
 export default defineConfig({
   site: "https://boranuzun.github.io",
-  base: "/homelab-test/",
+  base: "/homelab-docs/",
   integrations: [
     starlight({
       title: "homelab-docs",
@@ -115,12 +116,12 @@ export default defineConfig({
       serialize: (item) => {
         // Remove duplicate base URLs from malformed URLs
         let cleanUrl = item.url;
-        const baseUrl = "https://boranuzun.github.io/homelab-test/";
+        const baseUrl = "https://boranuzun.github.io/homelab-docs/";
 
         // Fix URLs that have the base URL duplicated
         if (cleanUrl.includes(baseUrl + "https://")) {
           cleanUrl = cleanUrl.replace(
-            baseUrl + "https://boranuzun.github.io/homelab-test/",
+            baseUrl + "https://boranuzun.github.io/homelab-docs/",
             baseUrl
           );
         }
@@ -136,13 +137,20 @@ export default defineConfig({
       filter: (page) => {
         return (
           !page.includes("/404") &&
-          page.startsWith("https://boranuzun.github.io/homelab-test/")
+          page.startsWith("https://boranuzun.github.io/homelab-docs/")
         );
       },
     }),
     icon(),
   ],
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [
+      tailwindcss(),
+      starlightDocSearch({
+        appId: "4Y838HGCJW",
+        apiKey: "8719430c9c01ad3075584f20f8b04d76",
+        indexName: "boranuzunio",
+      }),
+    ],
   },
 });

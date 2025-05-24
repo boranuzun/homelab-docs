@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://boranuzun.github.io/homelab-test/sitemap-index.xml
+Sitemap: https://boranuzun.github.io/homelab-docs/sitemap-index.xml
