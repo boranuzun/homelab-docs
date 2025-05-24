@@ -30,6 +30,38 @@
 
   "expressiveCode.copyButtonCopied": "Copié!",
   "expressiveCode.copyButtonTooltip": "Copier le code",
-  "expressiveCode.terminalWindowFallbackTitle": "Fenêtre de terminal"
+  "expressiveCode.terminalWindowFallbackTitle": "Fenêtre de terminal",
+
+  
+  "docsearch.searchBox.resetButtonTitle": "Effacer la requête",
+  "docsearch.searchBox.resetButtonAriaLabel": "Effacer la requête",
+  "docsearch.searchBox.cancelButtonText": "Annuler",
+  "docsearch.searchBox.cancelButtonAriaLabel": "Annuler",
+  "docsearch.searchBox.searchInputLabel": "Chercher",
+
+  "docsearch.startScreen.recentSearchesTitle": "Récents",
+  "docsearch.startScreen.noRecentSearchesText": "Pas de recherches récentes",
+  "docsearch.startScreen.saveRecentSearchButtonTitle": "Sauvegarder cette recherche",
+  "docsearch.startScreen.removeRecentSearchButtonTitle": "Supprimer de l'historique",
+  "docsearch.startScreen.favoriteSearchesTitle": "Favoris",
+  "docsearch.startScreen.removeFavoriteSearchButtonTitle": "Supprimer des favoris",
+
+  "docsearch.errorScreen.titleText": "Unable to fetch results",
+  "docsearch.errorScreen.helpText": "You might want to check your network connection.",
+
+  "docsearch.footer.selectText": "to select",
+  "docsearch.footer.selectKeyAriaLabel": "Enter key",
+  "docsearch.footer.navigateText": "to navigate",
+  "docsearch.footer.navigateUpKeyAriaLabel": "Arrow up",
+  "docsearch.footer.navigateDownKeyAriaLabel": "Arrow down",
+  "docsearch.footer.closeText": "to close",
+  "docsearch.footer.closeKeyAriaLabel": "Escape key",
+  "docsearch.footer.searchByText": "Search by",
+
+  "docsearch.noResultsScreen.noResultsText": "Aucun résultat trouvé pour",
+  "docsearch.noResultsScreen.suggestedQueryText": "Try searching for",
+  "docsearch.noResultsScreen.reportMissingResultsText": "Believe this query should return results?",
+  "docsearch.noResultsScreen.reportMissingResultsLinkText": "Let us know."
+
 }
 
