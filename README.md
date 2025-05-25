@@ -30,13 +30,13 @@ The goal is to design and automate the deployment of an **Operating System as Co
 ## Installation
 
 ```sh
-bun install
+npm install
 ```
 
 ## Local Development
 
 ```sh
-bun start
+npm run dev
 ```
 
 This command starts a local development server. Most changes are reflected live without restarting the server.
@@ -44,10 +44,10 @@ This command starts a local development server. Most changes are reflected live 
 ## Build
 
 ```sh
-bun run build
+npm run build
 ```
 
-This command generates static content into the `build` directory, which can be served using any static hosting service.
+This command generates static content into the `dist` directory, which can be served using any static hosting service.
 
 ## Deployment
 
