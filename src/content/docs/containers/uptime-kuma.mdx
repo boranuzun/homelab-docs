@@ -1,0 +1,65 @@
+---
+title: "Uptime Kuma"
+description: "Uptime Kuma is a self-hosted status monitoring solution that allows you to monitor the uptime of your services."
+sidebar:
+  label: Uptime Kuma
+  order: 3
+---
+
+import { Steps } from "@astrojs/starlight/components";
+
+Uptime Kuma is a self-hosted status monitoring solution that allows you to monitor the uptime of your services. It provides a web interface to track the availability of your applications and services, making it easy to identify issues and ensure your systems are running smoothly.
+
+```yaml
+// docker-compose.yaml
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:latest
+    container_name: uptime-kuma
+    ports:
+      - 3001:3001
+    volumes:
+      - uptime-kuma_data:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+volumes:
+  uptime-kuma_data:
+    name: uptime-kuma_data
+```
+
+## Configuration
+
+You can access Uptime Kuma by navigating to `http://localhost:3001` in your web browser. The interface allows you to add services to monitor, configure notification settings, and view the status of your monitored services.
+
+## Usage
+
+To use Uptime Kuma, follow these steps:
+
+<Steps>
+
+1. Start the Uptime Kuma container using the provided `docker-compose.yaml` configuration.
+
+2. Open your web browser and go to `http://localhost:3001`.
+
+3. Create an account or log in if you already have one.
+
+4. Add services to monitor by clicking on the "Add Monitor" button.
+
+5. Configure the monitoring settings for each service, including the URL to check, the check interval, and notification settings.
+
+6. Save the configuration and Uptime Kuma will start monitoring the specified services.
+
+</Steps>
+
+---
+
+<details>
+  <summary>
+    <strong>References</strong>
+  </summary>
+
+  <ul>
+    <li><a href="https://uptimekuma.org/" target="_blank" rel="noopener noreferrer">Uptime Kuma</a></li>
+  </ul>
+</details>

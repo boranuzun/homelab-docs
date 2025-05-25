@@ -1,0 +1,55 @@
+---
+title: "Watchtower"
+description: "Watchtower is a tool for automatically updating running Docker containers."
+sidebar:
+  label: Watchtower
+  order: 6
+---
+
+Watchtower is a tool for automatically updating running Docker containers. It monitors your containers and checks for updates to their images, allowing you to keep your services up-to-date without manual intervention.
+
+```yaml
+// docker-compose.yaml
+services:
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    environment:
+      # WATCHTOWER_DISABLE_CONTAINERS: "" # will ignore labels set. It is worth checking out labels as that can be a more scalabe solution (automatic)
+      WATCHTOWER_SCHEDULE: "0 0 4 * * *" # check and update containers daily at 4:00 AM
+      WATCHTOWER_CLEANUP: true # remove the old image after restarting a container with a new image
+      WATCHTOWER_TIMEOUT: 30s # timeout before the container is forcefully stopped. When set, this option will change the default (10s) wait time to the given value
+      WATCHTOWER_REMOVE_VOLUMES: true # remove all anonymous volumes from the container before restarting with a new image. Named volumes will not be removed!
+      WATCHTOWER_HTTP_API_TOKEN: ${WATCHTOWER_HTTP_API_TOKEN} # sets an authentication token to HTTP API requests
+      WATCHTOWER_HTTP_API_METRICS: true # enables a metrics endpoint, exposing prometheus metrics via HTTP. See Metrics for details.
+      WATCHTOWER_NOTIFICATIONS: gotify
+      WATCHTOWER_NOTIFICATION_GOTIFY_URL: ${WATCHTOWER_GOTIFY_URL}
+      WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN: ${WATCHTOWER_GOTIFY_TOKEN}
+      WATCHTOWER_NOTIFICATIONS_HOSTNAME: "watchtower"
+      TZ: "Europe/Zurich"
+    ports:
+      - 8081:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+```
+
+## Configuration
+
+You can configure Watchtower by setting environment variables in the `docker-compose.yaml` file. The example above includes several common configurations, such as scheduling updates, cleaning up old images, and enabling notifications via Gotify.
+
+## Usage
+
+...
+
+---
+
+<details>
+  <summary>
+    <strong>References</strong>
+  </summary>
+
+  <ul>
+    <li><a href="https://containrrr.dev/watchtower/" target="_blank" rel="noopener noreferrer">Watchtower</a></li>
+  </ul>
+</details>

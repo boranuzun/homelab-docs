@@ -1,0 +1,77 @@
+---
+title: "Homepage"
+description: "Homepage is a personal homepage generator that allows you to create a simple homepage with links to your favorite services."
+sidebar:
+  label: Homepage
+  order: 7
+---
+
+import { FileTree } from "@astrojs/starlight/components";
+
+# Homepage
+
+```yaml
+// docker-compose.yaml
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    environment:
+      PUID: ${HOMEPAGE_PUID}
+      PGID: ${HOMEPAGE_PGID}
+      HOMEPAGE_ALLOWED_HOSTS: ${HOMEPAGE_ALLOWED_HOSTS} # comma separated list of allowed hosts
+    ports:
+      - 3000:3000
+    volumes:
+      - /opt/containers/homepage:/app/config
+      - /var/run/docker.sock:/var/run/docker.sock:ro # optional, for docker integrations
+    restart: unless-stopped
+```
+
+## Configuration
+
+You can configure Homepage by editing the files in the `/opt/containers/homepage` directory. The main configuration files are:
+
+- `bookmarks.yaml`: Contains your favorite links.
+- `custom.css`: Custom CSS for styling your homepage.
+- `custom.js`: Custom JavaScript for additional functionality.
+- `docker.yaml`: Configuration for Docker integration.
+- `kubernetes.yaml`: Configuration for Kubernetes integration.
+- `services.yaml`: Configuration for the services you want to display on your homepage.
+- `settings.yaml`: General settings for the homepage.
+- `widgets.yaml`: Configuration for the widgets you want to display on your homepage.
+  You can also view the logs of the homepage service in the `logs` directory.
+
+<FileTree>
+
+- opt
+  - containers
+    - homepage
+      - bookmarks.yaml
+      - custom.css
+      - custom.js
+      - docker.yaml
+      - kubernetes.yaml
+      - logs/
+        - homepage.log
+      - services.yaml
+      - settings.yaml
+      - widgets.yaml
+
+</FileTree>
+
+## Usage
+
+...
+
+---
+
+<details>
+  <summary>
+    <strong>References</strong>
+  </summary>
+
+  <ul>
+    <li><a href="https://gethomepage.dev/" target="_blank" rel="noopener noreferrer">Homepage</a></li>
+  </ul>
+</details>

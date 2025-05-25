@@ -105,6 +105,7 @@ export default defineConfig({
           appId: "4Y838HGCJW",
           apiKey: "8719430c9c01ad3075584f20f8b04d76",
           indexName: "boranuzunio",
+          insights: true,
         }),
         // starlightLinksValidator(),
       ],

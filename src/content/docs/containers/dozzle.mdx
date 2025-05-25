@@ -1,0 +1,47 @@
+---
+title: "Dozzle"
+description: "Dozzle is a real-time log viewer for Docker containers."
+sidebar:
+  label: Dozzle
+  order: 5
+---
+
+Dozzle is a real-time log viewer for Docker containers. It allows you to view the logs of your containers in real-time, making it easier to debug and monitor your applications.
+
+```yaml
+// docker-compose.yaml
+services:
+  dozzle:
+    image: amir20/dozzle:latest
+    container_name: dozzle
+    ports:
+      - 8084:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    healthcheck:
+      test: ["CMD", "/dozzle", "healthcheck"]
+      interval: 3s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+```
+
+## Configuration
+
+You can access Dozzle by navigating to `http://localhost:8084` in your web browser. The interface provides a simple way to view logs from all running containers, filter logs by container, and search through the logs.
+
+## Usage
+To use Dozzle, simply start your Docker containers as usual. Dozzle will automatically detect running containers and display their logs in real-time. You can click on a container to view its logs, filter logs by keywords, and even pause or resume log streaming.
+
+---
+
+<details>
+  <summary>
+    <strong>References</strong>
+  </summary>
+
+  <ul>
+    <li><a href="hhttps://dozzle.dev/" target="_blank" rel="noopener noreferrer">Dozzle</a></li>
+  </ul>
+</details>

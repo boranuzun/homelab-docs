@@ -1,0 +1,63 @@
+---
+title: "Tailscale"
+description: "Tailscale is a zero-configuration VPN that makes it easy to connect your devices securely."
+sidebar:
+  label: Tailscale
+  order: 2
+---
+
+Tailscale is a zero-configuration VPN that makes it easy to connect your devices securely. It creates a secure mesh network between your devices, allowing them to communicate with each other without the need for port forwarding or complex network configurations.
+
+You can use Tailscale to access your homelab services from anywhere, securely and privately.
+
+You can run Tailscale in a Docker container, which simplifies the setup and management of your Tailscale network. Below is an example of how to set up Tailscale using Docker Compose.
+
+```yaml
+// docker-compose.yaml
+services:
+  tailscale:
+    image: tailscale/tailscale
+    container_name: tailscaled
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    environment:
+      - TS_HOSTNAME=${TAILSCALE_HOSTNAME} # Usually not necessary for your hostname to be the same name on the tailscale network
+      - TS_AUTHKEY=${TAILSCALE_TS_AUTHKEY} # Generate auth keys here: https://login.tailscale.com/admin/settings/keys
+      - TS_ROUTES=${TAILSCALE_TS_ROUTES} # Creates a subnet router for Tailscale. Use your subnet's CIDR in the form: 192.168.1.0/24
+      - TS_SOCKET=/var/run/tailscale/tailscaled.sock # Specifying the /var/lib/tailscale/tailscaled.sock location allows use of standard Tailscale commands
+      - TS_EXTRA_ARGS=--advertise-exit-node # Allows the container to be used as an exit node
+      - TS_STATE_DIR=/var/lib/tailscale # Required to create a persistent container state that will survive reboots
+    # - TS_ACCEPT_DNS=${TS_ACCEPT_DNS} # Set to false for Pi-hole Docker setups
+    volumes:
+      - /opt/containers/tailscale:/var/lib # Creates a tailscale directory under /data for persistence
+      - /dev/net/tun:/dev/net/tun
+    restart: unless-stopped
+    network_mode: host
+```
+
+## Configuration
+
+You can configure Tailscale by setting environment variables in the Docker Compose file. The most important variables are:
+
+- `TS_AUTHKEY`: This is the authentication key that allows the container to connect to your Tailscale network. You can generate this key from the Tailscale admin console.
+- `TS_ROUTES`: This variable allows you to specify the routes that Tailscale should advertise. For example, if your home network is `
+- `TS_EXTRA_ARGS`: This variable allows you to pass additional arguments to the Tailscale daemon. For example, you can use `--advertise-exit-node` to allow the container to be used as an exit node.
+
+## Usage
+
+...
+
+---
+
+<details>
+  <summary>
+    <strong>References</strong>
+  </summary>
+
+  <ul>
+    <li><a href="https://tailscale.com/" target="_blank" rel="noopener noreferrer">Tailscale</a></li>
+    <li><a href="https://tailscale.com/kb/1282/docker" target="_blank" rel="noopener noreferrer">Using Tailscale with Docker</a></li>
+    <li><a href="https://hub.docker.com/r/tailscale/tailscale" target="_blank" rel="noopener noreferrer">Tailscale Docker Hub</a></li>
+  </ul>
+</details>

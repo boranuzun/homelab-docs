@@ -1,4 +1,36 @@
 ---
 title: "Introduction to containers"
 description: "Containers are a lightweight way to run applications in isolated environments, making them ideal for deploying services in a homelab setup."
+sidebar:
+  label: Introduction to containers
+  order: 1
 ---
+
+import { LinkCard, CardGrid } from "@astrojs/starlight/components";
+
+Containers are a lightweight way to run applications in isolated environments, making them ideal for deploying services in a homelab setup. They allow you to package an application and its dependencies together, ensuring that it runs consistently across different environments.
+
+This section provides an overview of how to set up and manage containers in your homelab, including popular containerized applications and best practices for using Docker Compose.
+
+## Getting Started with Containers
+
+To get started with containers, you'll need to have Docker installed on your system. Docker provides a platform for developing, shipping, and running applications in containers. Once Docker is set up, you can use Docker Compose to define and run multi-container applications.
+Docker Compose allows you to define your application's services, networks, and volumes in a single YAML file, making it easy to manage complex applications.
+
+## Popular Containerized Applications
+
+This section highlights some popular containerized applications that you can deploy in your homelab. Each application has its own documentation and setup instructions, which you can follow to get them running quickly.
+
+<CardGrid>
+  <LinkCard title="Traefik" href="/homelab-docs/containers/traefik/" />
+  <LinkCard title="Tailscale" href="/homelab-docs/containers/tailscale/" />
+  <LinkCard title="Uptime Kuma" href="/homelab-docs/containers/uptime-kuma/" />
+  <LinkCard
+    title="Speedtest Tracker"
+    href="/homelab-docs/containers/speedtest-tracker/"
+  />
+  <LinkCard title="Dozzle" href="/homelab-docs/containers/dozzle/" />
+  <LinkCard title="Watchtower" href="/homelab-docs/containers/watchtower/" />
+  <LinkCard title="Homepage" href="/homelab-docs/containers/homepage/" />
+  <LinkCard title="Gotify" href="/homelab-docs/containers/gotify/" />
+</CardGrid>

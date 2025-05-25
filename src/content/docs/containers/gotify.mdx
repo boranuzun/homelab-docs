@@ -1,0 +1,44 @@
+---
+title: "Gotify"
+description: "Gotify is a simple server for sending and receiving notifications."
+sidebar:
+  label: Gotify
+  order: 8
+---
+
+Gotify is a simple server for sending and receiving notifications. It allows you to send notifications from various sources and receive them on your devices.
+
+```yaml
+// docker-compose.yaml
+services:
+  gotify:
+    image: gotify/server:latest
+    container_name: gotify
+    environment:
+      - TZ=Europe/Zurich
+    ports:
+      - 8082:80
+    volumes:
+      - /opt/containers/gotify/data:/app/data
+    restart: unless-stopped
+```
+
+## Configuration
+
+You can configure Gotify by accessing the web interface at `http://localhost:8082`. From there, you can create applications, manage users, and configure notification settings.
+
+## Usage
+
+...
+
+---
+
+<details>
+  <summary>
+    <strong>References</strong>
+  </summary>
+
+  <ul>
+    <li><a href="https://gotify.net/" target="_blank" rel="noopener noreferrer">Gotify</a></li>
+  </ul>
+</details>
