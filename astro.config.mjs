@@ -71,12 +71,12 @@ export default defineConfig({
           link: "intro/",
         },
         {
-          label: "Encryption",
-          autogenerate: { directory: "encryption" },
-        },
-        {
           label: "OpenTofu",
           autogenerate: { directory: "opentofu" },
+        },
+        {
+          label: "Encryption",
+          autogenerate: { directory: "encryption" },
         },
         {
           label: "NixOS",
