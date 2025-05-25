@@ -92,128 +92,22 @@ Now that we have the Proxmox user, role, and token set up, and a basic NixOS VM 
 
 <Steps>
 
-1. Create a directory for your OpenTofu configuration files, e.g., `opentofu`, and create the following files:
+1.  Create a directory for your OpenTofu configuration files, e.g., `opentofu`, and create the following files:
 
-   <FileTree>
+    <FileTree>
 
-   - opentofu
-     - imports.tf // File to import existing Proxmox VM
-     - opentofu.auto.tfvars // File containing secrets
-     - providers.tf // File to configure the Proxmox provider
-     - variables.tf // File to define OpenTofu variables
+    - opentofu
+      - imports.tf // File to import existing Proxmox VM
+      - opentofu.auto.tfvars // File containing secrets
+      - providers.tf // File to configure the Proxmox provider
+      - variables.tf // File to define OpenTofu variables
 
-   </FileTree>
+    </FileTree>
 
-2. To interract with Proxmox using OpenTofu, you need to set up the Proxmox provider. Update the file named `providers.tf` with the following content:
+2.  To interract with Proxmox using OpenTofu, you need to set up the Proxmox provider. Update the file named `providers.tf` with the following content:
 
-   ```hcl
-   // providers.tf
-
-   terraform {
-     required_providers {
-       proxmox = {
-         source  = "Telmate/proxmox"
-         version = "3.0.1-rc8"
-       }
-     }
-   }
-
-   provider "proxmox" {
-     # Configuration options
-
-   }
-
-   ```
-
-   Run the following command to download the Proxmox provider:
-
-   ```bash
-
-    tofu init
-
-   ```
-
-   Expected output:
-
-   ```bash frame="none"
-
-   Initializing the backend...
-
-   Initializing provider plugins...
-
-   - Finding telmate/proxmox versions matching "3.0.1-rc8"...
-   - Installing telmate/proxmox v3.0.1-rc8...
-   - Installed telmate/proxmox v3.0.1-rc8. Signature validation was skipped due to the registry not containing GPG keys for this provider
-
-   OpenTofu has created a lock file .terraform.lock.hcl to record the provider
-   selections it made above. Include this file in your version control repository
-   so that OpenTofu can guarantee to make the same selections by default when
-   you run "tofu init" in the future.
-
-   OpenTofu has been successfully initialized!
-
-   You may now begin working with OpenTofu. Try running "tofu plan" to see
-   any changes that are required for your infrastructure. All OpenTofu commands
-   should now work.
-
-   If you ever set or change modules or backend configuration for OpenTofu,
-   rerun this command to reinitialize your working directory. If you forget, other
-   commands will detect it and remind you to do so if necessary.
-
-   ```
-
-   You should now have a `.terraform` directory and a `.terraform.lock.hcl` file in your `opentofu` directory.
-
-3. Next, create a file named `imports.tf` to import the existing NixOS VM into OpenTofu:
-
-   ```hcl
-    // imports.tf
-
-   import {
-    to = proxmox_vm_qemu.nixos
-    id = "pve1/qemu/106" // Replace with your Proxmox node and VM ID
-   }
-
-   ```
-
-4. Create a file named `variables.tf` to define the variables used in your OpenTofu configuration:
-
-   ```hcl
-    // variables.tf
-
-    variable "pm_api_url" {
-      type        = string
-      description = "The Proxmox server URL (https://ip:port/api2/json)"
-    }
-
-    variable "pm_api_token_id" {
-      type        = string
-      description = "The Proxmox API Token ID (user@realm!tokenid)"
-    }
-
-    variable "pm_api_token_secret" {
-      type        = string
-      sensitive   = true
-      description = "The Proxmox API Token secret (UUID)"
-    }
-
-   ```
-
-5. Creaet a file named `opentofu.auto.tfvars` to store your Proxmox API credentials:
-
-   ```hcl
-
-    // opentofu.auto.tfvars
-    pm_api_url = "https://<proxmox-ip>:8006/api2/json"
-    pm_api_token_id = "terraform-prov@pve!tofu" // Replace with your Proxmox API Token ID
-    pm_api_token_secret = "<your-token-secret>" // Replace with your Proxmox API Token secret
-
-   ```
-
-6. Update the `providers.tf` file to use the variables defined in `variables.tf`:
-
-   ```diff lang=hcl
-   // providers.tf
+    ```hcl
+    // providers.tf
 
     terraform {
       required_providers {
@@ -226,136 +120,244 @@ Now that we have the Proxmox user, role, and token set up, and a basic NixOS VM 
 
     provider "proxmox" {
       # Configuration options
-   +   pm_api_url          = var.pm_api_url
-   +   pm_api_token_id     = var.pm_api_token_id
-   +   pm_api_token_secret = var.pm_api_token_secret
-   +   pm_tls_insecure     = true
+
     }
 
-   ```
+    ```
 
-7. Run the following command to generate the OpenTofu configuration:
+    Run the following command to download the Proxmox provider:
 
-   ```bash
+    ```bash
 
-   tofu plan -generate-config-out=nixos.tf
+     tofu init
 
-   ```
+    ```
 
-   It's possible that you will get errors related to the VM configuration. You can ignore these errors for now, as we will fix them in the next step.
+    Expected output:
 
-   ```bash frame="none"
+    ```bash frame="none"
 
-     proxmox_vm_qemu.nixos: Preparing import... [id=pve1/qemu/106]
-     proxmox_vm_qemu.nixos: Refreshing state... [id=pve1/qemu/106]
+    Initializing the backend...
 
-     Planning failed. OpenTofu encountered an error while generating this plan.
+    Initializing provider plugins...
 
-     ╷
-     │ Warning: Config generation is experimental
-     │
-     │ Generating configuration during import is currently experimental, and the generated configuration format may change in future versions.
-     ╵
-     ╷
-     │ Error: Conflicting configuration arguments
-     │
-     │   with proxmox_vm_qemu.nixos,
-     │   on nixos.tf line 78:
-     │   (source code not available)
-     │
-     │ "disks.0.ide.0.ide2.0.cdrom.0.iso": conflicts with disks.0.ide.0.ide2.0.cdrom.0.passthrough
-     ╵
-     ╷
-     │ Error: Conflicting configuration arguments
-     │
-     │   with proxmox_vm_qemu.nixos,
-     │   on nixos.tf line 79:
-     │   (source code not available)
-     │
-     │ "disks.0.ide.0.ide2.0.cdrom.0.passthrough": conflicts with disks.0.ide.0.ide2.0.cdrom.0.iso
-     ╵
+    - Finding telmate/proxmox versions matching "3.0.1-rc8"...
+    - Installing telmate/proxmox v3.0.1-rc8...
+    - Installed telmate/proxmox v3.0.1-rc8. Signature validation was skipped due to the registry not containing GPG keys for this provider
 
-   ```
+    OpenTofu has created a lock file .terraform.lock.hcl to record the provider
+    selections it made above. Include this file in your version control repository
+    so that OpenTofu can guarantee to make the same selections by default when
+    you run "tofu init" in the future.
 
-8. Open the generated `nixos.tf` file and fix the configuration errors. You can remove the conflicting lines or adjust them as needed. For example, you can remove the `passthrough` lines block:
+    OpenTofu has been successfully initialized!
 
-   ```diff lang=hcl
-   // nixos.tf
+    You may now begin working with OpenTofu. Try running "tofu plan" to see
+    any changes that are required for your infrastructure. All OpenTofu commands
+    should now work.
 
-   resource "proxmox_vm_qemu" "nixos" {
-     # Other configurations...
+    If you ever set or change modules or backend configuration for OpenTofu,
+    rerun this command to reinitialize your working directory. If you forget, other
+    commands will detect it and remind you to do so if necessary.
 
-     disks {
-       ide {
-         # Remove the conflicting lines
-         cdrom {
-           iso = "local:iso/nixos-minimal-24.11.718051.9b5ac7ad4529-x86_64-linux.iso"
-   -        passthrough = false
+    ```
+
+    You should now have a `.terraform` directory and a `.terraform.lock.hcl` file in your `opentofu` directory.
+
+3.  Next, create a file named `imports.tf` to import the existing NixOS VM into OpenTofu:
+
+    ```hcl
+     // imports.tf
+
+    import {
+     to = proxmox_vm_qemu.nixos
+     id = "pve1/qemu/106" // Replace with your Proxmox node and VM ID
+    }
+
+    ```
+
+4.  Create a file named `variables.tf` to define the variables used in your OpenTofu configuration:
+
+    ```hcl
+     // variables.tf
+
+     variable "pm_api_url" {
+       type        = string
+       description = "The Proxmox server URL (https://ip:port/api2/json)"
+     }
+
+     variable "pm_api_token_id" {
+       type        = string
+       description = "The Proxmox API Token ID (user@realm!tokenid)"
+     }
+
+     variable "pm_api_token_secret" {
+       type        = string
+       sensitive   = true
+       description = "The Proxmox API Token secret (UUID)"
+     }
+
+    ```
+
+5.  Creaet a file named `opentofu.auto.tfvars` to store your Proxmox API credentials:
+
+    ```hcl
+
+     // opentofu.auto.tfvars
+     pm_api_url = "https://<proxmox-ip>:8006/api2/json"
+     pm_api_token_id = "terraform-prov@pve!tofu" // Replace with your Proxmox API Token ID
+     pm_api_token_secret = "<your-token-secret>" // Replace with your Proxmox API Token secret
+
+    ```
+
+6.  Update the `providers.tf` file to use the variables defined in `variables.tf`:
+
+    ```diff lang=hcl
+    // providers.tf
+
+     terraform {
+       required_providers {
+         proxmox = {
+           source  = "Telmate/proxmox"
+           version = "3.0.1-rc8"
          }
        }
      }
 
-     # Other configurations...
-   }
+     provider "proxmox" {
+       # Configuration options
+    +   pm_api_url          = var.pm_api_url
+    +   pm_api_token_id     = var.pm_api_token_id
+    +   pm_api_token_secret = var.pm_api_token_secret
+    +   pm_tls_insecure     = true
+     }
 
-   ```
+    ```
 
-9. After fixing the configuration errors, run the following commands to plan again, format the configuration, and apply the changes:
+7.  Run the following command to generate the OpenTofu configuration:
 
-   ```bash
+    ```bash
 
-   tofu plan
+    tofu plan -generate-config-out=nixos.tf
 
-   ```
+    ```
 
-   Expected output:
+    It's possible that you will get errors related to the VM configuration. You can ignore these errors for now, as we will fix them in the next step.
 
-   ```bash frame="none"
+    ```bash frame="none"
 
+      proxmox_vm_qemu.nixos: Preparing import... [id=pve1/qemu/106]
+      proxmox_vm_qemu.nixos: Refreshing state... [id=pve1/qemu/106]
+
+      Planning failed. OpenTofu encountered an error while generating this plan.
+
+      ╷
+      │ Warning: Config generation is experimental
+      │
+      │ Generating configuration during import is currently experimental, and the generated configuration format may change in future versions.
+      ╵
+      ╷
+      │ Error: Conflicting configuration arguments
+      │
+      │   with proxmox_vm_qemu.nixos,
+      │   on nixos.tf line 78:
+      │   (source code not available)
+      │
+      │ "disks.0.ide.0.ide2.0.cdrom.0.iso": conflicts with disks.0.ide.0.ide2.0.cdrom.0.passthrough
+      ╵
+      ╷
+      │ Error: Conflicting configuration arguments
+      │
+      │   with proxmox_vm_qemu.nixos,
+      │   on nixos.tf line 79:
+      │   (source code not available)
+      │
+      │ "disks.0.ide.0.ide2.0.cdrom.0.passthrough": conflicts with disks.0.ide.0.ide2.0.cdrom.0.iso
+      ╵
+
+    ```
+
+8.  Open the generated `nixos.tf` file and fix the configuration errors. You can remove the conflicting lines or adjust them as needed. For example, you can remove the `passthrough` lines block:
+
+    ```diff lang=hcl
+    // nixos.tf
+
+    resource "proxmox_vm_qemu" "nixos" {
+      # Other configurations...
+
+      disks {
+        ide {
+          # Remove the conflicting lines
+          cdrom {
+            iso = "local:iso/nixos-minimal-24.11.718051.9b5ac7ad4529-x86_64-linux.iso"
+    -        passthrough = false
+          }
+        }
+      }
+
+      # Other configurations...
+    }
+
+    ```
+
+9.  After fixing the configuration errors, run the following commands to plan again, format the configuration, and apply the changes:
+
+    ```bash
+
+    tofu plan
+
+    ```
+
+    Expected output:
+
+    ```bash frame="none"
+
+      proxmox_vm_qemu.nixos: Preparing import... [id=pve1/qemu/106]
+      proxmox_vm_qemu.nixos: Refreshing state... [id=pve1/qemu/106]
+
+      OpenTofu used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+        ~ update in-place
+
+      OpenTofu will perform the following actions:
+
+        # proxmox_vm_qemu.nixos will be updated in-place
+        # (imported from "pve1/qemu/106")
+        ~ resource "proxmox_vm_qemu" "nixos" {
+           # Ressources...
+          }
+
+      Plan: 1 to import, 0 to add, 1 to change, 0 to destroy.
+
+      ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+      Note: You didn't use the -out option to save this plan, so OpenTofu can't guarantee to take exactly these actions if you run "tofu apply" now.
+
+    ```
+
+    Now format the configuration file to ensure it follows the best practices and is easy to read and apply the changes:
+
+    ```bash
+
+     tofu fmt
+     tofu apply -auto-approve
+
+    ```
+
+    Expected output:
+
+    ```bash frame="none"
      proxmox_vm_qemu.nixos: Preparing import... [id=pve1/qemu/106]
      proxmox_vm_qemu.nixos: Refreshing state... [id=pve1/qemu/106]
 
-     OpenTofu used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
-       ~ update in-place
+     # Other output...
 
-     OpenTofu will perform the following actions:
+     Plan: 0 to add, 1 to change, 0 to destroy.
+     proxmox_vm_qemu.nixos: Modifying... [id=pve1/qemu/106]
+     proxmox_vm_qemu.nixos: Modifications complete after 2s [id=pve1/qemu/106]
 
-       # proxmox_vm_qemu.nixos will be updated in-place
-       # (imported from "pve1/qemu/106")
-       ~ resource "proxmox_vm_qemu" "nixos" {
-          # Ressources...
-         }
+     Apply complete! Resources: 0 added, 1 changed, 0 destroyed.
 
-     Plan: 1 to import, 0 to add, 1 to change, 0 to destroy.
-
-     ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-
-     Note: You didn't use the -out option to save this plan, so OpenTofu can't guarantee to take exactly these actions if you run "tofu apply" now.
-
-   ```
-
-   ```bash
-
-    tofu fmt
-    tofu apply -auto-approve
-
-   ```
-
-   Expected output:
-
-   ```bash frame="none"
-    proxmox_vm_qemu.nixos: Preparing import... [id=pve1/qemu/106]
-    proxmox_vm_qemu.nixos: Refreshing state... [id=pve1/qemu/106]
-
-    # Other output...
-
-    Plan: 0 to add, 1 to change, 0 to destroy.
-    proxmox_vm_qemu.nixos: Modifying... [id=pve1/qemu/106]
-    proxmox_vm_qemu.nixos: Modifications complete after 2s [id=pve1/qemu/106]
-
-    Apply complete! Resources: 0 added, 1 changed, 0 destroyed.
-
-   ```
+    ```
 
 10. You can start the NixOS VM using any of the following methods:
 
@@ -408,8 +410,6 @@ Now that we have the Proxmox user, role, and token set up, and a basic NixOS VM 
 
 You have successfully set up OpenTofu to manage a NixOS VM on Proxmox. You can now use OpenTofu to automate the management of your Proxmox resources, making it easier to deploy and maintain your NixOS VMs.
 
-
-
 ---
 
 <details>
@@ -422,4 +422,3 @@ You have successfully set up OpenTofu to manage a NixOS VM on Proxmox. You can n
 <li><a href="https://github.com/Telmate/terraform-provider-proxmox" target="_blank" rel="noopener noreferrer">terraform-provider-proxmox</a></li>
 </ul>
 </details>
-```
