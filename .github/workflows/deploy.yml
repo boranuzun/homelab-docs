@@ -17,6 +17,9 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      TZ: Europe/Zurich
+      
     steps:
       - name: Checkout your repository using git
         uses: actions/checkout@v4
