@@ -97,14 +97,14 @@ Now that we have the Proxmox user, role, and token set up, and a basic NixOS VM 
     <FileTree>
 
     - opentofu
-      - imports.tf // File to import existing Proxmox VM
-      - opentofu.auto.tfvars // File containing secrets
-      - providers.tf // File to configure the Proxmox provider
-      - variables.tf // File to define OpenTofu variables
+      - imports.tf            // File to import existing Proxmox VM
+      - opentofu.auto.tfvars  // File containing secrets
+      - providers.tf          // File to configure the Proxmox provider
+      - variables.tf          // File to define OpenTofu variables
 
     </FileTree>
 
-2.  To interract with Proxmox using OpenTofu, you need to set up the Proxmox provider. Update the file named `providers.tf` with the following content:
+2.  To interact with Proxmox using OpenTofu, you need to set up the Proxmox provider. Update the file named `providers.tf` with the following content:
 
     ```hcl
     // providers.tf
@@ -323,7 +323,7 @@ Now that we have the Proxmox user, role, and token set up, and a basic NixOS VM 
         # proxmox_vm_qemu.nixos will be updated in-place
         # (imported from "pve1/qemu/106")
         ~ resource "proxmox_vm_qemu" "nixos" {
-           # Ressources...
+           # Resources...
           }
 
       Plan: 1 to import, 0 to add, 1 to change, 0 to destroy.
@@ -334,7 +334,7 @@ Now that we have the Proxmox user, role, and token set up, and a basic NixOS VM 
 
     ```
 
-    Now format the configuration file to ensure it follows the best practices and is easy to read and apply the changes:
+    Now format the configuration file to ensure it follows best practices, is easy to read, and apply the changes:
 
     ```bash
 
@@ -359,7 +359,7 @@ Now that we have the Proxmox user, role, and token set up, and a basic NixOS VM 
 
     ```
 
-10. You can start the NixOS VM using any of the following methods:
+10. You can start the NixOS VM using either of the following methods:
 
     <Tabs syncKey="methods">
       <TabItem label="Manual">
