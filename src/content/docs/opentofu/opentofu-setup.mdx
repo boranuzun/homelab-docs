@@ -9,7 +9,7 @@ import { FileTree } from "@astrojs/starlight/components";
 import { Steps } from "@astrojs/starlight/components";
 import { Tabs, TabItem } from "@astrojs/starlight/components";
 
-OpenTofu is a powerful tool for managing infrastructure as code. In this section, we'll walk through the steps to set up OpenTofu for building a NixOS VM on Proxmox.
+OpenTofu is a powerful tool for managing infrastructure as code. In this section, we'll walk through the steps to configure OpenTofu to manage a NixOS virtual machine on a Proxmox server, from setting up permissions to writing and applying your infrastructure definitions.
 
 ## Prerequisites
 
@@ -43,11 +43,11 @@ To allow OpenTofu to manage your Proxmox resources, you need to create a user an
 
    ```
 
-4. Create a token for the user:
+4. Create a token for the `terraform-prov@pve` user:
 
    Navigate to **Datacenter** > **Permissions** > **API Tokens** and click on **Add**.
 
-   Select the previously created user (`terraform-prov@pve`), give the token a name (e.g., `tofu`), untick the `Privilege Separation` and set an expiration date and comment if desired.
+   Select the previously created user, assign a name to the token (e.g., `tofu`), and uncheck `Privilege Separation`. You may optionally set an expiration date and add a comment.
 
    ![Proxmox API Token](../../../assets/opentofu/proxmox-api-token.png)
 
@@ -97,10 +97,10 @@ Now that we have the Proxmox user, role, and token set up, and a basic NixOS VM 
     <FileTree>
 
     - opentofu
-      - imports.tf            // File to import existing Proxmox VM
-      - opentofu.auto.tfvars  // File containing secrets
-      - providers.tf          // File to configure the Proxmox provider
-      - variables.tf          // File to define OpenTofu variables
+      - imports.tf // File to import existing Proxmox VM
+      - opentofu.auto.tfvars // File containing secrets
+      - providers.tf // File to configure the Proxmox provider
+      - variables.tf // File to define OpenTofu variables
 
     </FileTree>
 

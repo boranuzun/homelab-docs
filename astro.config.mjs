@@ -6,6 +6,7 @@ import sitemap from "@astrojs/sitemap";
 import starlightDocSearch from "@astrojs/starlight-docsearch";
 import starlightImageZoom from "starlight-image-zoom";
 // import starlightLinksValidator from "starlight-links-validator";
+import starlightThemeRapide from "starlight-theme-rapide";
 import starlightScrollToTop from "starlight-scroll-to-top";
 import icon from "astro-icon";
 
@@ -51,7 +52,7 @@ export default defineConfig({
       components: {
         // Header: "./src/components/CustomHeader.astro",
         // LanguageSelect: "./src/components/CustomLanguageSelect.astro",
-        ThemeSelect: "./src/components/CustomThemeSelect.astro",
+        // ThemeSelect: "./src/components/CustomThemeSelect.astro",
       },
       expressiveCode: {
         // https://expressive-code.com/guides/themes/
@@ -107,6 +108,8 @@ export default defineConfig({
           indexName: "boranuzunio",
           insights: true,
         }),
+        // https://github.com/HiDeoo/starlight-theme-rapide
+        starlightThemeRapide(),
         // starlightLinksValidator(),
       ],
     }),
