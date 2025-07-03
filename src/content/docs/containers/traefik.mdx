@@ -9,13 +9,108 @@ sidebar:
 Traefik is a modern reverse proxy and load balancer that makes deploying microservices easy. It automatically discovers services and configures itself to route traffic to them, making it an ideal choice for managing your homelab's network traffic.
 
 ```yaml
-// docker-compose.yaml
+// compose.yaml
+services:
+  traefik:
+    image: traefik:latest
+    container_name: traefik
+    ports:
+      - 80:80 # HTTP entrypoint
+      - 443:443 # HTTPS entrypoint
+      - 8080:8080 # (Optional) Enable Dashboard, don't do in production
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /run/docker.sock:/run/docker.sock:ro
+      - /containers/docker/traefik/config/traefik.yaml:/etc/traefik/traefik.yaml:ro
+      - /containers/docker/traefik/config/dynamic:/etc/traefik/dynamic:ro
+      - /containers/docker/traefik/certs:/var/traefik/certs/:rw
+    environment:
+      - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}  # <-- Change this to your Cloudflare access token
+      - CF_API_EMAIL=${CF_API_EMAIL}
+    networks:
+      - traefik_proxy
+    labels:
+      - "traefik.enable=true"
+      # HTTP EntryPoint
+      # - "traefik.http.routers.traefik-http.entrypoints=web"
+      # - "traefik.http.routers.traefik-http.rule=Host(`traefik.nixlab.ch`)"
 
+      # HTTPS EntryPoint
+      - "traefik.http.routers.traefik-https.tls=true"
+      - "traefik.http.routers.traefik-https.entrypoints=websecure"
+      - "traefik.http.routers.traefik-https.tls.certresolver=cloudflare"
+      - "traefik.http.routers.traefik-https.rule=Host(`traefik.nixlab.ch`)"
+
+      # Services
+      - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+    restart: unless-stopped
+
+networks:
+  traefik_proxy:
+    external: true  # Make sure this network exists, create it with: docker network create traefik_proxy
 ```
 
 # Configuration
 
-...
+```yaml
+// traefik.yaml
+global:
+  checkNewVersion: false
+  sendAnonymousUsage: false
+
+log:
+  level: DEBUG # [TRACE, DEBUG, INFO, WARN, ERROR, FATAL]
+
+# --> (Optional) Enable API and Dashboard here, don't do in production
+api:
+  dashboard: true
+  insecure: true
+  debug: false
+# <--
+
+entryPoints:
+  web:
+    address: :80
+    # --> (Optional) Redirect all HTTP to HTTPS
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+    # <--
+  websecure:
+    address: :443
+
+# --> (Optional) Disable TLS Cert verification check
+# serversTransport:
+#   insecureSkipVerify: true
+# <--
+
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+    network: traefik_proxy
+
+  # # Add file provider for non-container services
+  # file:
+  #   directory: /etc/traefik/dynamic
+  #   watch: true
+
+certificatesResolvers:
+  cloudflare:
+    acme:
+      email: example@example.com # Your email for Let's Encrypt notifications
+      storage: /var/traefik/certs/cloudflare-acme.json
+      caServer: https://acme-v02.api.letsencrypt.org/directory # prod (default)
+      # caServer: https://acme-staging-v02.api.letsencrypt.org/directory # staging
+      keyType: EC256
+      dnsChallenge:
+        provider: cloudflare
+        resolvers:
+          - "1.1.1.1:53"
+          - "8.8.8.8:53"
+```
 
 # Usage
 
@@ -30,5 +125,7 @@ Traefik is a modern reverse proxy and load balancer that makes deploying microse
 
   <ul>
     <li><a href="https://traefik.io/traefik/" target="_blank" rel="noopener noreferrer">Traefik</a></li>
+    <li><a href="https://www.youtube.com/watch?v=-hfejNXqOzA" target="_blank" rel="noopener noreferrer">Simple HTTPs for Docker! // Traefik Tutorial (updated)</a></li>
+    <li><a href="https://www.youtube.com/watch?v=CmUzMi5QLzI" target="_blank" rel="noopener noreferrer">Traefik v3.3 - Secure Everything! Complete Tutorial</a></li>
   </ul>
 </details>

@@ -52,3 +52,24 @@
 Add additional Tailwind styles to this file:
 https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
 */
+
+/* Fix for markdown lists in rapide theme */
+.sl-markdown-content ul {
+  list-style-type: disc !important;
+  margin-left: 2rem !important;
+  margin-bottom: 1rem !important;
+}
+
+.sl-markdown-content ul li {
+  margin-bottom: 0.5rem !important;
+}
+
+.sl-markdown-content ol {
+  list-style-type: decimal !important;
+  margin-left: 2rem !important;
+  margin-bottom: 1rem !important;
+}
+
+.sl-markdown-content ol li {
+  margin-bottom: 0.5rem !important;
+}

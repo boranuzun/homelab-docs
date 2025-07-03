@@ -6,33 +6,54 @@ sidebar:
   order: 5
 ---
 
-Dozzle is a real-time log viewer for Docker containers. It allows you to view the logs of your containers in real-time, making it easier to debug and monitor your applications.
+Dozzle is a real-time log viewer for Docker containers that provides a clean, web-based interface for monitoring container logs in real-time. It's particularly useful for debugging and monitoring applications without needing to access the command line.
+
+## Features
+
+- Real-time Logging & Monitoring
+- Clean, responsive web interface
+- Container filtering and search functionality
+- No authentication required (secure with reverse proxy)
+- Lightweight and fast
+- Dark/light theme support
+
+## Docker Compose Configuration
 
 ```yaml
-// docker-compose.yaml
+// compose.yaml
 services:
   dozzle:
     image: amir20/dozzle:latest
     container_name: dozzle
-    ports:
-      - 8084:8080
+    # ports:
+    #   - 8084:8080
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    healthcheck:
-      test: ["CMD", "/dozzle", "healthcheck"]
-      interval: 3s
-      timeout: 30s
-      retries: 5
-      start_period: 30s
+    environment:
+      - DOZZLE_ENABLE_SHELL=true
+    networks:
+      - traefik_proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dozzle-https.tls=true"
+      - "traefik.http.routers.dozzle-https.entrypoints=websecure"
+      - "traefik.http.routers.dozzle-https.tls.certresolver=cloudflare"
+      - "traefik.http.routers.dozzle-https.rule=Host(`dozzle.nixlab.ch`)"
+      - "traefik.http.services.dozzle.loadbalancer.server.port=8080"
+
     restart: unless-stopped
+
+networks:
+  traefik_proxy:
+    external: true
 ```
 
-## Configuration
-
-You can access Dozzle by navigating to `http://localhost:8084` in your web browser. The interface provides a simple way to view logs from all running containers, filter logs by container, and search through the logs.
-
 ## Usage
-To use Dozzle, simply start your Docker containers as usual. Dozzle will automatically detect running containers and display their logs in real-time. You can click on a container to view its logs, filter logs by keywords, and even pause or resume log streaming.
+
+  1. Access the Interface: Navigate to https://dozzle.nixlab.ch in your web browser
+  2. View Logs: Click on any container to view its logs in real-time
+  3. Filter Logs: Use the search bar to filter logs by keywords
+  4. Download Logs: You can download logs for further analysis if needed
 
 ---
 
@@ -42,6 +63,6 @@ To use Dozzle, simply start your Docker containers as usual. Dozzle will automat
   </summary>
 
   <ul>
-    <li><a href="hhttps://dozzle.dev/" target="_blank" rel="noopener noreferrer">Dozzle</a></li>
+    <li><a href="https://dozzle.dev/" target="_blank" rel="noopener noreferrer">Dozzle</a></li>
   </ul>
 </details>

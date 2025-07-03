@@ -29,6 +29,13 @@ pip install pre-commit
 ```
 
   </TabItem>
+  <TabItem label="APT" >
+
+```bash
+sudo apt install pre-commit
+```
+
+  </TabItem>
   <TabItem label="Homebrew">
 
 ```bash
@@ -54,9 +61,7 @@ repos:
         name: Encrypt secrets to .enc files
         entry: .pre-commit-sops.sh
         language: script
-        pass_filenames: false # prevents empty list from breaking things
-        always_run: true # force it to run even if no files match
-        exclude: "" # override exclusions so it runs every time
+        always_run: true # .env are not tracked by git, so we always want to run this
 ```
 
 ## Create the custom pre-commit script
@@ -110,6 +115,16 @@ if [ ${#enc_files_to_add[@]} -gt 0 ]; then
     git add "${enc_files_to_add[@]}"
 fi
 ```
+
+:::caution
+
+Make sure to give the script execute permissions:
+
+```bash
+chmod +x .pre-commit-sops.sh
+```
+
+:::
 
 ## Create the sops configuration file
 

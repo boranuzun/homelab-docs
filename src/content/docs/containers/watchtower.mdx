@@ -9,11 +9,15 @@ sidebar:
 Watchtower is a tool for automatically updating running Docker containers. It monitors your containers and checks for updates to their images, allowing you to keep your services up-to-date without manual intervention.
 
 ```yaml
-// docker-compose.yaml
+// compose.yaml
 services:
   watchtower:
     image: containrrr/watchtower:latest
     container_name: watchtower
+    ports:
+      - 8081:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     environment:
       # WATCHTOWER_DISABLE_CONTAINERS: "" # will ignore labels set. It is worth checking out labels as that can be a more scalabe solution (automatic)
       WATCHTOWER_SCHEDULE: "0 0 4 * * *" # check and update containers daily at 4:00 AM
@@ -26,17 +30,13 @@ services:
       WATCHTOWER_NOTIFICATION_GOTIFY_URL: ${WATCHTOWER_GOTIFY_URL}
       WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN: ${WATCHTOWER_GOTIFY_TOKEN}
       WATCHTOWER_NOTIFICATIONS_HOSTNAME: "watchtower"
-      TZ: "Europe/Zurich"
-    ports:
-      - 8081:8080
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      TZ: ${TZ}
     restart: unless-stopped
 ```
 
 ## Configuration
 
-You can configure Watchtower by setting environment variables in the `docker-compose.yaml` file. The example above includes several common configurations, such as scheduling updates, cleaning up old images, and enabling notifications via Gotify.
+You can configure Watchtower by setting environment variables in the `compose.yaml` file. The example above includes several common configurations, such as scheduling updates, cleaning up old images, and enabling notifications via Gotify.
 
 ## Usage
 
@@ -51,5 +51,7 @@ You can configure Watchtower by setting environment variables in the `docker-com
 
   <ul>
     <li><a href="https://containrrr.dev/watchtower/" target="_blank" rel="noopener noreferrer">Watchtower</a></li>
+    <li><a href="https://www.youtube.com/watch?v=mSSlrRgSAP4" target="_blank" rel="noopener noreferrer">Watchtower - Update Docker Containers Automatically</a></li>
+    <li><a href="https://www.youtube.com/watch?v=YVEe5ZrmA9k" target="_blank" rel="noopener noreferrer">Automatic Container Updates - Watchtower Docker GitOps</a></li>
   </ul>
 </details>

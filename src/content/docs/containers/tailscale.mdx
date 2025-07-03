@@ -13,25 +13,25 @@ You can use Tailscale to access your homelab services from anywhere, securely an
 You can run Tailscale in a Docker container, which simplifies the setup and management of your Tailscale network. Below is an example of how to set up Tailscale using Docker Compose.
 
 ```yaml
-// docker-compose.yaml
+// compose.yaml
 services:
   tailscale:
-    image: tailscale/tailscale
+    image: tailscale/tailscale:latest
     container_name: tailscaled
-    cap_add:
-      - NET_ADMIN
-      - NET_RAW
+    volumes:
+      - /containers/docker/tailscale/data:/var/lib
+      - /dev/net/tun:/dev/net/tun
     environment:
       - TS_HOSTNAME=${TAILSCALE_HOSTNAME} # Usually not necessary for your hostname to be the same name on the tailscale network
       - TS_AUTHKEY=${TAILSCALE_TS_AUTHKEY} # Generate auth keys here: https://login.tailscale.com/admin/settings/keys
       - TS_ROUTES=${TAILSCALE_TS_ROUTES} # Creates a subnet router for Tailscale. Use your subnet's CIDR in the form: 192.168.1.0/24
-      - TS_SOCKET=/var/run/tailscale/tailscaled.sock # Specifying the /var/lib/tailscale/tailscaled.sock location allows use of standard Tailscale commands
+      - TS_SOCKET=/var/run/tailscale/tailscaled.sock # Specifying the /var/lib/tailscale/tailscaled.sock location allows use of standard Tailscale commands 
       - TS_EXTRA_ARGS=--advertise-exit-node # Allows the container to be used as an exit node
       - TS_STATE_DIR=/var/lib/tailscale # Required to create a persistent container state that will survive reboots
     # - TS_ACCEPT_DNS=${TS_ACCEPT_DNS} # Set to false for Pi-hole Docker setups
-    volumes:
-      - /opt/containers/tailscale:/var/lib # Creates a tailscale directory under /data for persistence
-      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
     restart: unless-stopped
     network_mode: host
 ```

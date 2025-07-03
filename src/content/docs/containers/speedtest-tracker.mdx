@@ -8,38 +8,44 @@ sidebar:
 
 Speedtest Tracker is a service that tracks your internet speed over time and provides insights into your connection quality. It allows you to monitor your internet performance, view historical data, and analyze trends in your connection speed.
 
-Below is a sample `docker-compose.yaml` configuration for Speedtest Tracker:
+Below is a sample docker compose configuration for Speedtest Tracker:
 
 ```yaml
-// docker-compose.yaml
+// compose.yaml
 services:
   speedtest-tracker:
     image: lscr.io/linuxserver/speedtest-tracker:latest
     container_name: speedtest-tracker
+    # ports:
+    #   - 3002:80
+    volumes:
+      - /opt/containers/speedtest-tracker/config:/config
     environment:
-      - PUID=${SPEEDTEST-TRACKER_PUID}
-      - PGID=${SPEEDTEST-TRACKER_PGID}
-      - APP_KEY=${SPEEDTEST-TRACKER_APP_KEY} # How to generate an app key: https://speedtest-tracker.dev/
-      - APP_URL=http://localhost
-      # - APP_TIMEZONE=Europe/Zurich
+      - PUID=${SPEEDTEST_TRACKER_PUID}
+      - PGID=${SPEEDTEST_TRACKER_PGID}
+      - APP_KEY=${SPEEDTEST_TRACKER_APP_KEY} # How to generate an app key: echo -n 'base64:'; openssl rand -base64 32;
+      - TZ=${TZ}
+      - DISPLAY_TIMEZONE=${TZ}
       - DB_CONNECTION=sqlite
       - SPEEDTEST_SCHEDULE=0 * * * * # optional: schedule a speedtest with an cronjob https://crontab.guru
-    ports:
-      - 8080:80
-      - 8443:443
-    volumes:
-      - /opt/containers/speedtest-tracker:/config
-    # - /path/to-custom-ssl-keys:/config/keys
+      - APP_DEBUG=true
+    
+    networks:
+      - traefik_proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.speedtest-https.tls=true"
+      - "traefik.http.routers.speedtest-https.entrypoints=websecure"
+      - "traefik.http.routers.speedtest-https.tls.certresolver=cloudflare"
+      - "traefik.http.routers.speedtest-https.rule=Host(`speed.nixlab.ch`)"
+      - "traefik.http.services.speedtest.loadbalancer.server.port=80"
+
     restart: unless-stopped
+
+networks:
+  traefik_proxy:
+    external: true
 ```
-
-## Configuration
-
-You can access Speedtest Tracker by navigating to `http://localhost:8080` in your web browser. The interface provides a dashboard where you can view your internet speed history, current speed, and other performance metrics.
-
-## Usage
-
-...
 
 ---
 
