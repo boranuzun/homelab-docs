@@ -7,6 +7,7 @@ sidebar:
 ---
 
 import { LinkCard, CardGrid } from "@astrojs/starlight/components";
+import { FileTree } from "@astrojs/starlight/components";
 
 Containers are a lightweight way to run applications in isolated environments, making them ideal for deploying services in a homelab setup. They allow you to package an application and its dependencies together, ensuring that it runs consistently across different environments.
 
@@ -20,6 +21,51 @@ Docker Compose allows you to define your application's services, networks, and v
 ## Popular Containerized Applications
 
 This section highlights some popular containerized applications that you can deploy in your homelab. Each application has its own documentation and setup instructions, which you can follow to get them running quickly.
+
+:::note[Structure]
+
+For all containerized services in this documentation, the structure will be organized as follows:
+
+- **Git repository**: A repository named `docker-compose` containing all service configurations
+- **Service folders**: Each service has its own folder within `docker-compose/`
+- **Configuration files**: Each service folder contains:
+  - `compose.yaml` - The Docker Compose configuration
+  - `.env` - Environment variables and configuration
+
+**Example structure:**
+
+  <FileTree>
+
+    - docker-compose/
+      - traefik/
+        - compose.yaml
+        - .env
+      - speedtest-tracker/
+        - compose.yaml
+        - .env
+
+  </FileTree>
+
+- **Bind mounts**: Container data and configuration files are mounted from `/opt/containers/serviceName` on the host system
+
+<FileTree>
+
+    - /opt/containers/
+      - traefik/
+        - certs/
+          - cloudflare-acme.json
+        - config/
+          - traefik.yaml
+      - speedtest-tracker/
+        - config/
+
+  </FileTree>
+
+- **Note**: You may need to change ownership of `/opt/containers/` to your user (owned by root by default): `sudo chown -R $USER:$USER /opt/containers/`
+
+This consistent structure makes it easy to manage and deploy services across your homelab environment.
+
+:::
 
 <CardGrid>
   <LinkCard title="Traefik" href="/homelab-docs/containers/traefik/" />

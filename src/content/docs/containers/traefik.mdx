@@ -70,9 +70,9 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /run/docker.sock:/run/docker.sock:ro
-      - /containers/docker/traefik/config/traefik.yaml:/etc/traefik/traefik.yaml:ro
-      - /containers/docker/traefik/config/dynamic:/etc/traefik/dynamic:ro
-      - /containers/docker/traefik/certs:/var/traefik/certs/:rw
+      - /opt/containers/traefik/config/traefik.yaml:/etc/traefik/traefik.yaml:ro
+      - /opt/containers/traefik/config/dynamic:/etc/traefik/dynamic:ro
+      - /opt/containers/traefik/certs:/var/traefik/certs/:rw
     environment:
       - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}  # <-- Change this to your Cloudflare access token
       - CF_API_EMAIL=${CF_API_EMAIL}
@@ -101,7 +101,7 @@ networks:
 
 # Configuration
 
-Create the configuration file at `/containers/docker/traefik/config/traefik.yaml`:
+Create the configuration file at `/opt/containers/traefik/config/traefik.yaml`:
 
 ```yaml
 // traefik.yaml
@@ -168,8 +168,8 @@ certificatesResolvers:
 1. **Create the necessary directories**:
 
    ```bash
-   mkdir -p /containers/docker/traefik/config/dynamic
-   mkdir -p /containers/docker/traefik/certs
+   mkdir -p /opt/containers/traefik/config/dynamic
+   mkdir -p /opt/containers/traefik/certs
    ```
 
 2. **Create the Traefik network**:

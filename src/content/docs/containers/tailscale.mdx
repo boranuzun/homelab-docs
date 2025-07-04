@@ -19,7 +19,7 @@ services:
     image: tailscale/tailscale:latest
     container_name: tailscaled
     volumes:
-      - /containers/docker/tailscale/data:/var/lib
+      - /opt/containers/tailscale/data:/var/lib
       - /dev/net/tun:/dev/net/tun
     environment:
       - TS_HOSTNAME=${TAILSCALE_HOSTNAME} # Usually not necessary for your hostname to be the same name on the tailscale network
