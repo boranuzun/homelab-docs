@@ -22,6 +22,24 @@ Docker Compose allows you to define your application's services, networks, and v
 
 This section highlights some popular containerized applications that you can deploy in your homelab. Each application has its own documentation and setup instructions, which you can follow to get them running quickly.
 
+<CardGrid>
+  <LinkCard title="Traefik" href="/homelab-docs/containers/traefik/" />
+  <LinkCard title="Tailscale" href="/homelab-docs/containers/tailscale/" />
+  <LinkCard title="Uptime Kuma" href="/homelab-docs/containers/uptime-kuma/" />
+  <LinkCard
+    title="Speedtest Tracker"
+    href="/homelab-docs/containers/speedtest-tracker/"
+  />
+  <LinkCard title="Dozzle" href="/homelab-docs/containers/dozzle/" />
+  <LinkCard title="Watchtower" href="/homelab-docs/containers/watchtower/" />
+  <LinkCard title="Homepage" href="/homelab-docs/containers/homepage/" />
+  <LinkCard title="Gotify" href="/homelab-docs/containers/gotify/" />
+</CardGrid>
+
+## Container Structure and Best Practices
+
+When deploying containerized services, it's important to follow a consistent structure and best practices to ensure maintainability and ease of use. Below are some guidelines for organizing your containerized services:
+
 :::note[Structure]
 
 For all containerized services in this documentation, the structure will be organized as follows:
@@ -63,20 +81,4 @@ For all containerized services in this documentation, the structure will be orga
 
 - **Note**: You may need to change ownership of `/opt/containers/` to your user (owned by root by default): `sudo chown -R $USER:$USER /opt/containers/`
 
-This consistent structure makes it easy to manage and deploy services across your homelab environment.
-
 :::
-
-<CardGrid>
-  <LinkCard title="Traefik" href="/homelab-docs/containers/traefik/" />
-  <LinkCard title="Tailscale" href="/homelab-docs/containers/tailscale/" />
-  <LinkCard title="Uptime Kuma" href="/homelab-docs/containers/uptime-kuma/" />
-  <LinkCard
-    title="Speedtest Tracker"
-    href="/homelab-docs/containers/speedtest-tracker/"
-  />
-  <LinkCard title="Dozzle" href="/homelab-docs/containers/dozzle/" />
-  <LinkCard title="Watchtower" href="/homelab-docs/containers/watchtower/" />
-  <LinkCard title="Homepage" href="/homelab-docs/containers/homepage/" />
-  <LinkCard title="Gotify" href="/homelab-docs/containers/gotify/" />
-</CardGrid>
