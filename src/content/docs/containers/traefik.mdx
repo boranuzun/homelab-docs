@@ -6,7 +6,56 @@ sidebar:
   order: 1
 ---
 
+import { Steps } from "@astrojs/starlight/components";
+
 Traefik is a modern reverse proxy and load balancer that makes deploying microservices easy. It automatically discovers services and configures itself to route traffic to them, making it an ideal choice for managing your homelab's network traffic.
+
+## Purpose
+
+Traefik serves as a **reverse proxy and load balancer** that sits between the internet and your internal services. It automatically:
+
+- Routes incoming requests from your domain names (like `dozzle.nixlab.ch`) to the correct internal services
+- Handles SSL/TLS certificates automatically using Let's Encrypt
+- Discovers Docker services automatically and configures routing rules
+
+## Prerequisites
+
+Before setting up Traefik, you need to:
+
+<Steps>
+  <ol>
+    <li>
+      **Possess a domain name** (purchased from [<u>any registrar</u>](https://www.icann.org/en/contracted-parties/accredited-registrars/list-of-accredited-registrars) like Infomaniak)
+    </li>
+    <li>
+      **Transfer nameservers to Cloudflare** for easier DNS management
+
+      You can follow these documentation steps from [Infomaniak](https://www.infomaniak.com/en/support/faq/1798/modify-the-dns-of-the-domain-name) and [Cloudflare](https://developers.cloudflare.com/fundamentals/manage-domains/add-site/)
+    </li>
+    <li>
+      **Create a Cloudflare API token**
+        - Go to https://dash.cloudflare.com/profile/api-tokens
+        - Choose the "Edit zone DNS" template
+        - Create a `.env` file and add `CF_DNS_API_TOKEN=your_token_here`
+        - Also add `CF_API_EMAIL=your_email@example.com`
+    </li>
+    <li>
+      **Configure DNS records in Cloudflare**
+        - Add an A record pointing to your server's IP address
+        - Add a wildcard CNAME record (`*.nixlab.ch`) pointing to your domain (`nixlab.ch`)
+        - Set both records to "DNS only" (no proxy)
+
+        :::note
+
+        You don't necessarily have to setup DNS records in Cloudflare. You can manage the records inside your local DNS server ([<u>PiHole</u>](https://pi-hole.net/), [<u>AdGuard Home</u>](https://adguard.com/fr/adguard-home/overview.html) , etc.) if you have one. I choose this approach because it's a one-time setup and every device on your network will have those records without having to change their parameters. However, there is one downside: if you lose internet access, you lose access to the Cloudflare DNS server, something to keep in mind.
+
+        :::
+    </li>
+
+  </ol>
+</Steps>
+
+## Docker Compose Configuration
 
 ```yaml
 // compose.yaml
@@ -51,6 +100,8 @@ networks:
 ```
 
 # Configuration
+
+Create the configuration file at `/containers/docker/traefik/config/traefik.yaml`:
 
 ```yaml
 // traefik.yaml
@@ -100,7 +151,7 @@ providers:
 certificatesResolvers:
   cloudflare:
     acme:
-      email: example@example.com # Your email for Let's Encrypt notifications
+      email: your_email@example.com # Your email for Let's Encrypt notifications
       storage: /var/traefik/certs/cloudflare-acme.json
       caServer: https://acme-v02.api.letsencrypt.org/directory # prod (default)
       # caServer: https://acme-staging-v02.api.letsencrypt.org/directory # staging
@@ -112,9 +163,71 @@ certificatesResolvers:
           - "8.8.8.8:53"
 ```
 
-# Usage
+## Setup Instructions
 
-...
+1. **Create the necessary directories**:
+
+   ```bash
+   mkdir -p /containers/docker/traefik/config/dynamic
+   mkdir -p /containers/docker/traefik/certs
+   ```
+
+2. **Create the Traefik network**:
+
+   ```bash
+   docker network create traefik_proxy
+   ```
+
+3. **Create your `.env` file** with your Cloudflare credentials:
+
+   ```env
+   CF_DNS_API_TOKEN=your_cloudflare_api_token
+   CF_API_EMAIL=your_email@example.com
+   ```
+
+4. **Update the email address** in `traefik.yaml` for Let's Encrypt notifications
+
+5. **Start Traefik**:
+   ```bash
+   docker-compose up -d
+   ```
+
+## Usage with Other Services
+
+To expose other services through Traefik, add these labels to their Docker Compose configurations:
+
+```yaml
+# Example for Dozzle service
+services:
+  dozzle:
+    image: amir20/dozzle:latest
+    container_name: dozzle
+    networks:
+      - traefik_proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dozzle.rule=Host(`dozzle.nixlab.ch`)"
+      - "traefik.http.routers.dozzle.entrypoints=websecure"
+      - "traefik.http.routers.dozzle.tls=true"
+      - "traefik.http.routers.dozzle.tls.certresolver=cloudflare"
+      - "traefik.http.services.dozzle.loadbalancer.server.port=8080"
+
+networks:
+  traefik_proxy:
+    external: true
+```
+
+## How It Works
+
+1. **Domain Routing**: When someone visits `dozzle.nixlab.ch`, Traefik receives the request and forwards it to your Dozzle container based on the routing rules defined in Docker labels.
+
+2. **Automatic HTTPS**: The configuration uses Cloudflare's DNS challenge to automatically obtain and renew SSL certificates from Let's Encrypt, ensuring all your services are accessible via HTTPS.
+
+3. **Service Discovery**: Traefik monitors your Docker containers and automatically creates routes when you add the appropriate labels to your services.
+
+4. **Certificate Management**: The `cloudflare` certificate resolver uses DNS challenges to prove domain ownership. Certificates are stored in `/var/traefik/certs/` and automatically renewed.
+
+This setup eliminates the need to manually configure SSL certificates or update DNS records for each service - Traefik handles everything automatically once properly configured.
 
 ---
 
@@ -124,7 +237,10 @@ certificatesResolvers:
   </summary>
 
   <ul>
-    <li><a href="https://traefik.io/traefik/" target="_blank" rel="noopener noreferrer">Traefik</a></li>
+    <li><a href="https://traefik.io/traefik/" target="_blank" rel="noopener noreferrer">Traefik website</a></li>
+    <li><a href="https://doc.traefik.io/traefik/" target="_blank" rel="noopener noreferrer">Traefik documentation</a></li>
+    <li><a href="https://www.infomaniak.com/en/support/faq/1798/modify-the-dns-of-the-domain-name" target="_blank" rel="noopener noreferrer">Modify the DNS of the domain name</a></li>
+    <li><a href="https://developers.cloudflare.com/fundamentals/manage-domains/add-site/" target="_blank" rel="noopener noreferrer">Add a site to Cloudflare</a></li>
     <li><a href="https://www.youtube.com/watch?v=-hfejNXqOzA" target="_blank" rel="noopener noreferrer">Simple HTTPs for Docker! // Traefik Tutorial (updated)</a></li>
     <li><a href="https://www.youtube.com/watch?v=CmUzMi5QLzI" target="_blank" rel="noopener noreferrer">Traefik v3.3 - Secure Everything! Complete Tutorial</a></li>
   </ul>
