@@ -1,0 +1,50 @@
+---
+title: Introduction to CI/CD
+description: "Learn how to use CI/CD to automate the deployment of your NixOS configuration."
+sidebar:
+  order: 1
+---
+
+**CI/CD** stands for **Continuous Integration** and **Continuous Deployment**. It is a fundamental practice in modern DevOps workflows that focuses on automating the building, testing, and deployment of code whenever changes are pushed to a version control system like Git.
+
+## Why Use CI/CD?
+
+CI/CD brings several advantages to infrastructure and software projects:
+
+- **Automation** — Replaces manual steps with automated pipelines
+- **Speed** — Accelerates feedback and deployment loops
+- **Reliability** — Reduces the risk of human error
+- **Consistency** — Ensures changes are applied the same way every time
+- **Collaboration** — Allows teams to work more efficiently with shared workflows
+
+## CI/CD in This Project
+
+In this homelab project, CI/CD is used to automatically rebuild and deploy the **NixOS configuration** and the **containerized services** whenever changes are made to the configuration files in the Git repository.
+
+This means:
+
+- Any update to `configuration.nix` or related files is instantly picked up
+- A GitHub Actions pipeline validates the configuration and applies it
+- The remote NixOS VM is updated without needing to log in manually
+
+This approach is crucial for maintaining a **declarative**, **reproducible**, and **hands-off** infrastructure environment.
+
+## Tool Used
+
+- **GitHub Actions** — Used to trigger workflows when commits are pushed
+- **OpenSSH** — Securely connects to the remote NixOS machine
+- **nixos-rebuild** — Rebuilds the system from the updated configuration
+- **Tailscale Github Action** — Used to connect to the NixOS VM over a secure mesh network
+
+---
+
+<details>
+  <summary>
+    <strong>Learn More</strong>
+  </summary>
+  <ul>
+    <li><a href="https://www.redhat.com/en/topics/devops/what-is-ci-cd" target="_blank" rel="noopener noreferrer">What is CI/CD?</a></li>
+    <li><a href="https://docs.github.com/en/actions" target="_blank" rel="noopener noreferrer">GitHub Actions documentation</a></li>
+    <li><a href="https://tailscale.com/kb/1276/tailscale-github-action" target="_blank" rel="noopener noreferrer">Tailscale Github Action</a></li>
+  </ul>
+</details>

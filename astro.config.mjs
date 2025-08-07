@@ -87,6 +87,10 @@ export default defineConfig({
           label: "Containers",
           autogenerate: { directory: "containers" },
         },
+        {
+          label: "CI/CD",
+          autogenerate: { directory: "cicd" },
+        },
       ],
       customCss: ["./src/styles/global.css"],
       editLink: {
