@@ -1,4 +1,52 @@
 ---
-title: "Introduction to NixOS"
-description: Introduction to NixOS, its features, and how it fits into the homelab project.
+title: Introduction to NixOS
+description: 'Overview of NixOS and why it is well-suited for reproducible, declarative infrastructure.'
+sidebar:
+  order: 1
 ---
+
+
+[NixOS](https://nixos.org) is a unique Linux distribution built around the [Nix package manager](https://nixos.org/manual/nix/stable/). It introduces a **purely functional**, **declarative**, and **reproducible** approach to system configuration and package management.
+
+Instead of configuring your system imperatively (manually installing packages, editing files, etc.), NixOS lets you define the entire state of your system in a single configuration file: `configuration.nix`. This makes it especially powerful for infrastructure automation and DevOps workflows.
+
+## Why Use NixOS?
+
+NixOS offers several key benefits that make it ideal for homelabs and Infrastructure as Code (IaC) environments:
+
+- **Declarative Configuration**  
+  Define your system state in code. Everything from installed packages to system services and user accounts is described in a single file.
+
+- **Reproducibility**  
+  Build the exact same system across machines or over time. You can rollback to previous configurations with ease.
+
+- **Atomic Upgrades & Rollbacks**  
+  System upgrades are safe and atomic. If something breaks, roll back instantly.
+
+- **Isolation & Purity**  
+  Nix ensures packages and builds are isolated, preventing conflicts and ensuring predictable behavior.
+
+- **Built-in Versioning**  
+  The Nix store and Git integration allow you to track, reproduce, and audit every system change.
+
+## NixOS in This Project
+
+In the context of this project, NixOS is the foundation of the **homelab VM**. Its declarative nature ensures that:
+
+- All system configuration is version-controlled
+- Services can be reliably deployed and re-deployed
+- Rebuilding the system is as simple as running `nixos-rebuild switch`
+
+By combining NixOS with tools like OpenTofu, GitHub Actions, and SOPS, we can fully automate, secure, and manage the infrastructure lifecycle using modern DevOps and GitOps practices.
+
+---
+
+<details>
+  <summary>
+    <strong>Further Reading</strong>
+  </summary>
+
+  - 📘 [NixOS Manual](https://nixos.org/manual/nixos/stable/)
+  - 🛠️ [Getting Started with NixOS](https://nixos.org/learn.html)
+  - 💬 [Discourse Community](https://discourse.nixos.org/)
+</details>

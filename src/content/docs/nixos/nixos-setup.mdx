@@ -1,0 +1,344 @@
+---
+title: NixOS Setup
+description: "Step-by-step guide to setting up NixOS on your machine."
+sidebar:
+  order: 3
+---
+
+import { Steps } from "@astrojs/starlight/components";
+import { Code } from "@astrojs/starlight/components";
+import { FileTree } from "@astrojs/starlight/components";
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Since NixOS is a declarative operating system, setting it up involves defining your system configuration in a `configuration.nix` file. Below are the steps to set up NixOS on your machine.
+
+I chose to define my NixOS configuration in a [Git repository](https://github.com/boranuzun/homelab-iac/), which allows me to version control my system settings and easily replicate the setup on other machines.
+
+## File Structure
+
+Here is the structure of my NixOS configuration repository:
+
+<FileTree>
+
+- nixos/
+  - configuration.nix
+  - hardware-configuration.nix
+  - flake.nix
+
+</FileTree>
+
+## Create a hashed password for the user
+
+Before you start, you need to create a hashed password for your user. This is important for security reasons, as storing plain text passwords is not recommended.
+You can use the `mkpasswd` command from the `whois` package to generate a hashed password. This command is available on most Linux distributions but if you don't have it already installed, you can install it using your package manager:
+
+```bash
+sudo apt install whois  # For Debian/Ubuntu
+```
+
+Then, generate a hashed password using SHA-512:
+
+```bash
+mkpasswd -m SHA-512
+```
+
+You will get an output like this:
+
+```
+$6$JXX4vOM4f.lRZulS$W6ElZ1Ct01o0BPEHkFwZBaNcNGbWORxzihc2fUo0B1/Wc68qg8kJ1TahdfAcsAFKVQUVWi6RFoEBizxtAm8x61
+```
+
+## Configuration Files
+
+Here is the content of each configuration file:
+
+<Tabs syncKey="config-file">
+  <TabItem label="configuration.nix">
+    ```nix
+    { config, pkgs, pkgs-stable, ... }:
+
+    {
+      imports = [
+        ./hardware-configuration.nix
+      ];
+
+      # Boot configuration
+      boot.loader.grub.enable = true;
+
+      boot.loader.grub.device = "/dev/sda";
+      boot.loader.efi.canTouchEfiVariables = false;
+
+      # Network configuration
+      networking.hostName = "nixos";
+
+      # Static IP configuration
+      networking.useDHCP = false;
+      networking.interfaces.ens18 = {
+        ipv4.addresses = [ {
+          address = "192.168.1.15";
+          prefixLength = 24; # Subnet mask
+        } ];
+      };
+
+      # Default gateway configuration
+      networking.defaultGateway = "192.168.1.1";
+
+      # DNS configuration
+      networking.nameservers = [
+        "192.168.1.1"     # Your router DNS
+        "1.1.1.1"         # Cloudflare DNS (backup)
+        "8.8.8.8"         # Google DNS (backup)
+      ];
+
+      # Disable NetworkManager to avoid conflicts with static IP
+      networking.networkmanager.enable = false;
+
+      networking.firewall.enable = true;
+      networking.firewall.allowedTCPPorts = [ 22 80 443 8080 9000 ];
+
+      # Time zone and locale
+      time.timeZone = "Europe/Zurich";
+      i18n.defaultLocale = "en_US.UTF-8";
+      i18n.extraLocaleSettings = {
+        LC_ADDRESS = "fr_CH.UTF-8";
+        LC_IDENTIFICATION = "fr_CH.UTF-8";
+        LC_MEASUREMENT = "fr_CH.UTF-8";
+        LC_MONETARY = "fr_CH.UTF-8";
+        LC_NAME = "fr_CH.UTF-8";
+        LC_NUMERIC = "fr_CH.UTF-8";
+        LC_PAPER = "fr_CH.UTF-8";
+        LC_TELEPHONE = "fr_CH.UTF-8";
+        LC_TIME = "fr_CH.UTF-8";
+      };
+
+      # User configuration
+      users.users.boran = {
+        isNormalUser = true;
+        description = "Boran's User";
+        extraGroups = [ "wheel" "docker" ];
+        shell = pkgs.bash;
+        hashedPassword = "$6$AbS2hbvZjuBX4UUQ$qSyjRgCz8xPkn8nRluT3Ue5f1g.N/Yvn52HLy/uO1uwHc4Vd1Ch4eUg0uqsf8ViyEbenz.pRciaNSpRp/3mPN1";
+        openssh.authorizedKeys.keys = [
+          # SSH key for user boran
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG4eiTftWXVdB5OtQ5TQ8GaVx0WOrfulIJlsxTIZhOfB macOS"
+        ];
+      };
+
+      # Root user configuration (optional, for emergency access)
+      users.users.root.openssh.authorizedKeys.keys = [
+        # SSH key for root user
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG4eiTftWXVdB5OtQ5TQ8GaVx0WOrfulIJlsxTIZhOfB macOS"
+      ];
+
+      # Enable SSH service
+      services.openssh = {
+        enable = true;
+        ports = [ 22 ];
+        settings = {
+          PasswordAuthentication = true;  # Allow password authentication
+          PermitRootLogin = "prohibit-password";  # Root can only use SSH keys
+          X11Forwarding = false;
+          MaxAuthTries = 3;
+        };
+      };
+
+      # Docker configuration
+      virtualisation.docker = {
+        enable = true;
+        enableOnBoot = true;
+        autoPrune.enable = true;
+        autoPrune.dates = "weekly";
+      };
+
+      # System packages
+      environment.systemPackages = with pkgs; [
+        # Essential tools
+        vim
+        nano
+        wget
+        curl
+        git
+        unzip
+        zip
+        tree
+        btop
+
+        # Docker tools
+        docker
+        docker-compose
+
+        # Network tools
+        dig
+        nmap
+        netcat
+
+        # System monitoring
+        iotop
+        lsof
+      ];
+
+      # Enable nix flakes
+      nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+      # Auto-upgrade system
+      system.autoUpgrade = {
+        enable = false; # Disabled because we do it via CI/CD
+        flake = "/etc/nixos";
+      };
+
+      # Enable automatic garbage collection
+      nix.gc = {
+        automatic = true;
+        dates = "weekly";
+        options = "--delete-older-than 30d";
+      };
+
+      # System state version
+      system.stateVersion = "25.05";
+
+      # Journald configuration for log retention
+      services.journald.extraConfig = ''
+        SystemMaxUse=1G
+        MaxRetentionSec=1month
+      '';
+    }
+    ```
+
+  </TabItem>
+    <TabItem label="hardware-configuration.nix">
+      ```nix
+      { config, lib, pkgs, modulesPath, ... }:
+
+      {
+        imports = [
+          (modulesPath + "/profiles/qemu-guest.nix")
+        ];
+
+        # Filesystem configuration
+        fileSystems."/" = {
+        device = "/dev/sda1";
+        fsType = "ext4";
+        };
+
+        # Boot
+        boot.initrd.availableKernelModules = [
+          "ahci"
+          "xhci_pci"
+          "virtio_pci"
+          "virtio_scsi"
+          "sd_mod"
+          "sr_mod"
+        ];
+        boot.initrd.kernelModules = [ ];
+        boot.kernelModules = [ "kvm-amd" "kvm-intel" ];
+        boot.extraModulePackages = [ ];
+
+        # Enable QEMU Guest Agent for Proxmox integration
+        services.qemuGuest.enable = true;
+
+        # CPU microcode updates (not needed in VM but doesn't hurt)
+        hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+
+        # Set the system architecture
+        nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+      }
+      ```
+    </TabItem>
+
+    <TabItem label="flake.nix">
+    ```nix
+    {
+      description = "NixOS Server Configuration";
+
+      inputs = {
+        nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+        nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.05";
+      };
+
+      outputs = { self, nixpkgs, nixpkgs-stable }: {
+        nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            ./hardware-configuration.nix
+            ./configuration.nix
+          ];
+          specialArgs = {
+            pkgs-stable = import nixpkgs-stable {
+              system = "x86_64-linux";
+              config.allowUnfree = true;
+            };
+          };
+        };
+      };
+    }
+    ```
+    </TabItem>
+
+</Tabs>
+
+## Install NixOS
+
+Now that you have your configuration files ready, you can proceed with the NixOS installation. Follow these steps:
+
+<Steps>
+  <ol>
+    <li>
+      Copy your configuration files to `/mnt/etc/nixos/`:
+      ```bash
+      sudo rm -rf /etc/nixos/* # Clear existing configuration
+      sudo git clone https://github.com/boran/homelab-iac.git /tmp/homelab-iac # Clone your repository in a temporary directory
+      sudo cp -r /tmp/homelab-iac/nixos/* /mnt/etc/nixos/ # Copy the configuration files to the NixOS mount point
+      ```
+    </li>
+    <li>
+      Install NixOS using your configuration:
+      ```bash
+      sudo nixos-install --flake /mnt/etc/nixos#nixos
+      ```
+    </li>
+    <li>
+      Set a root password when prompted.
+    </li>
+    <li>
+      Reboot into your new NixOS installation:
+      ```bash
+      sudo reboot
+      ```
+
+      But since we used OpenTofu to provision the VM, we will have to remove the `ISO` disk from the configuration and then run `tofu apply` to apply the changes.
+
+      ```diff lang=hcl
+        // nixos.tf
+
+        resource "proxmox_vm_qemu" "nixos" {
+      -     boot                        = "order=scsi0;ide2;net0"
+            boot                        = "order=scsi0;net0"
+
+          # Other configurations...
+
+          disks {
+      -      ide {
+      -        ide2 {
+      -          cdrom {
+      -            iso = "local:iso/latest-nixos-minimal-x86_64-linux.iso"
+      -          }
+      -        }
+      -      }
+            scsi {
+              scsi0 {
+                disk {
+                  ...
+                }
+              }
+            }
+          }
+
+          # Other configurations...
+        }
+      ```
+
+      Now you can run `tofu apply` to apply the changes and remove the ISO disk from the VM configuration.
+
+    </li>
+  </ol>
+</Steps>

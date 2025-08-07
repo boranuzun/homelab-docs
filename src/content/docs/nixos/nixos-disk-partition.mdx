@@ -1,0 +1,36 @@
+---
+title: Disk partitioning
+description: "Guide to manually partitioning disks for NixOS installation."
+sidebar:
+  order: 2
+---
+
+import { Steps } from "@astrojs/starlight/components";
+
+In order to use NixOS, you will have to initially partition the allocated disk space for the NixOS installation. I prefer to do this manually because it's only a one-time setup and it's easier to set up. However, you can also use tools like [disko](https://github.com/nix-community/disko) to declaratively partition your disks.
+
+<Steps>
+    <ol>
+    <li>
+    Partition the disk using `parted` or `fdisk`. For example, if you have a disk at `/dev/sda`, you can use the following command:
+      ```bash
+        sudo parted /dev/sda -- mklabel msdos
+        sudo parted /dev/sda -- mkpart primary ext4 1MiB 100%
+      ```
+    </li>
+    <li>
+    Format the partition:
+      ```bash
+      sudo mkfs.ext4 -L nixos /dev/sda1
+      ```
+    </li>
+    <li>
+    Mount the partition:
+      ```bash
+      sudo mount /dev/sda1 /mnt
+      ```
+    </li>
+  </ol>
+</Steps>
+
+

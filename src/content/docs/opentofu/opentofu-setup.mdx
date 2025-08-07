@@ -113,7 +113,7 @@ Now that we have the Proxmox user, role, and token set up, and a basic NixOS VM 
       required_providers {
         proxmox = {
           source  = "Telmate/proxmox"
-          version = "3.0.1-rc8"
+          version = "3.0.2-rc03"
         }
       }
     }
@@ -171,7 +171,7 @@ Now that we have the Proxmox user, role, and token set up, and a basic NixOS VM 
 
     import {
      to = proxmox_vm_qemu.nixos
-     id = "pve1/qemu/106" // Replace with your Proxmox node and VM ID
+     id = "pve1/qemu/105" // Replace with your Proxmox node and VM ID
     }
 
     ```
@@ -246,8 +246,8 @@ Now that we have the Proxmox user, role, and token set up, and a basic NixOS VM 
 
     ```bash frame="none"
 
-      proxmox_vm_qemu.nixos: Preparing import... [id=pve1/qemu/106]
-      proxmox_vm_qemu.nixos: Refreshing state... [id=pve1/qemu/106]
+      proxmox_vm_qemu.nixos: Preparing import... [id=pve1/qemu/105]
+      proxmox_vm_qemu.nixos: Refreshing state... [id=pve1/qemu/105]
 
       Planning failed. OpenTofu encountered an error while generating this plan.
 
@@ -312,8 +312,8 @@ Now that we have the Proxmox user, role, and token set up, and a basic NixOS VM 
 
     ```bash frame="none"
 
-      proxmox_vm_qemu.nixos: Preparing import... [id=pve1/qemu/106]
-      proxmox_vm_qemu.nixos: Refreshing state... [id=pve1/qemu/106]
+      proxmox_vm_qemu.nixos: Preparing import... [id=pve1/qemu/105]
+      proxmox_vm_qemu.nixos: Refreshing state... [id=pve1/qemu/105]
 
       OpenTofu used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
         ~ update in-place
@@ -321,7 +321,7 @@ Now that we have the Proxmox user, role, and token set up, and a basic NixOS VM 
       OpenTofu will perform the following actions:
 
         # proxmox_vm_qemu.nixos will be updated in-place
-        # (imported from "pve1/qemu/106")
+        # (imported from "pve1/qemu/105")
         ~ resource "proxmox_vm_qemu" "nixos" {
            # Resources...
           }
@@ -346,14 +346,14 @@ Now that we have the Proxmox user, role, and token set up, and a basic NixOS VM 
     Expected output:
 
     ```bash frame="none"
-     proxmox_vm_qemu.nixos: Preparing import... [id=pve1/qemu/106]
-     proxmox_vm_qemu.nixos: Refreshing state... [id=pve1/qemu/106]
+     proxmox_vm_qemu.nixos: Preparing import... [id=pve1/qemu/105]
+     proxmox_vm_qemu.nixos: Refreshing state... [id=pve1/qemu/105]
 
      # Other output...
 
      Plan: 0 to add, 1 to change, 0 to destroy.
-     proxmox_vm_qemu.nixos: Modifying... [id=pve1/qemu/106]
-     proxmox_vm_qemu.nixos: Modifications complete after 2s [id=pve1/qemu/106]
+     proxmox_vm_qemu.nixos: Modifying... [id=pve1/qemu/105]
+     proxmox_vm_qemu.nixos: Modifications complete after 2s [id=pve1/qemu/105]
 
      Apply complete! Resources: 0 added, 1 changed, 0 destroyed.
 
@@ -365,7 +365,7 @@ Now that we have the Proxmox user, role, and token set up, and a basic NixOS VM 
       <TabItem label="Manual">
 
         - Through the Proxmox web interface: Navigate to your VM and click the "Start" button
-        - Via command line: `qm start 106`
+        - Via command line: `qm start 105`
 
       </TabItem>
 
