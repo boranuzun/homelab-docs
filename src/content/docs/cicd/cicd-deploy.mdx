@@ -1,0 +1,133 @@
+---
+title: CI/CD Workflow for NixOS Deployment
+description: "Explanation of the GitHub Actions workflow that automatically deploys NixOS configuration and updates containers."
+sidebar:
+  order: 2
+---
+
+This workflow automates the process of updating the **NixOS configuration** and **Docker containers** on the homelab server whenever changes are pushed to the GitHub repository.
+
+It uses **GitHub Actions** for automation, **Tailscale** to connect to the private network, and **SSH** to apply changes directly on the NixOS VM.
+
+---
+
+## Workflow Overview
+
+**Trigger:**  
+The workflow runs whenever there is a push that modifies files in either:
+
+- `nixos/**`
+- `containers/**`
+
+```yaml
+on:
+  push:
+    paths:
+      - "nixos/**"
+      - "containers/**"
+```
+
+This ensures that deployments happen only when relevant configuration or container files are updated.
+
+---
+
+## Steps Breakdown
+
+### 1. Checkout Repository
+
+```yaml
+- name: Checkout repo
+  uses: actions/checkout@v4
+```
+
+Fetches the latest version of the repository so that the workflow can work with updated configuration and container files.
+
+### 2. Start Tailscale
+
+```yaml
+- name: Start Tailscale
+  uses: tailscale/github-action@v3
+  with:
+    authkey: \${{ secrets.TAILSCALE_AUTHKEY }}
+```
+
+Starts Tailscale inside the GitHub Actions runner, allowing it to securely connect to the homelab server's **tailnet**.  
+The `TAILSCALE_AUTHKEY` is stored as a GitHub secret.
+
+### 3. SSH into the NixOS Server and Deploy
+
+```yaml
+- name: SSH and deploy
+  env:
+    NIXOS_IP: 192.168.1.15
+  run: |
+    echo "\${{ secrets.SSH_PRIVATE_KEY }}" > key.pem
+    chmod 600 key.pem
+
+    ssh -o StrictHostKeyChecking=no -i key.pem root@\${NIXOS_IP} <<'EOF'
+      set -e
+
+      # === Update NixOS config ===
+      rm -rf /etc/nixos/*
+      rm -rf /tmp/homelab-iac
+      git clone https://github.com/boranuzun/homelab-iac.git /tmp/homelab-iac
+      cp -r /tmp/homelab-iac/nixos/* /etc/nixos/
+      nixos-rebuild switch
+
+      # === Update containers ===
+      mkdir -p /opt/containers
+      rsync -a --delete /tmp/homelab-iac/containers/ /opt/containers/
+
+      for dir in /opt/containers/*; do
+        if [ -f "$dir/compose.yaml" ]; then
+          echo "Processing container: $(basename "$dir")"
+
+          # Decrypt .env.enc if exists
+          if [ -f "$dir/.env.enc" ]; then
+            echo "Decrypting .env.enc for $(basename "$dir")"
+            sops decrypt --input-type dotenv --output-type dotenv "$dir/.env.enc" > "$dir/.env"
+          fi
+
+          # Start container with or without env file
+          if [ -f "$dir/.env" ]; then
+            docker compose -f "$dir/compose.yaml" --env-file "$dir/.env" up -d
+          else
+            docker compose -f "$dir/compose.yaml" up -d
+          fi
+        fi
+      done
+    EOF
+```
+
+**What happens here:**
+
+1. The SSH private key (stored in GitHub secrets) is written to `key.pem` and given correct permissions.
+2. SSH connects to the NixOS server via its IP (`192.168.1.15`).
+3. The current `/etc/nixos` configuration is replaced with the latest from the repository.
+4. `nixos-rebuild switch` applies the updated configuration.
+5. Container definitions in `/opt/containers` are updated using `rsync`.
+6. For each container:
+   - If an encrypted `.env.enc` file exists, it is decrypted with **SOPS**.
+   - Docker Compose is run with the `.env` file if available.
+
+---
+
+## Why This is Useful
+
+- **Fully automated**: No manual SSH or file transfers needed.
+- **Secure**: Uses Tailscale for private networking and GitHub secrets for credentials.
+- **Consistent deployments**: Every push results in a reproducible server state.
+- **Secrets management**: Integrates **SOPS** to keep sensitive data encrypted in Git.
+
+---
+
+<details>
+  <summary>
+    <strong>References</strong>
+  </summary>
+
+  <ol>  
+    <li><a href="https://docs.github.com/en/actions" target="_blank" rel="noopener noreferrer">GitHub Actions Documentation</a></li>
+    <li><a href="https://github.com/tailscale/github-action" target="_blank" rel="noopener noreferrer">Tailscale GitHub Action</a></li>
+  </ol>
+</details>
