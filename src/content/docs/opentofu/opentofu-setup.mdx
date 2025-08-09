@@ -9,7 +9,7 @@ import { FileTree } from "@astrojs/starlight/components";
 import { Steps } from "@astrojs/starlight/components";
 import { Tabs, TabItem } from "@astrojs/starlight/components";
 
-OpenTofu is a powerful tool for managing infrastructure as code. In this section, we'll walk through the steps to configure OpenTofu to manage a NixOS virtual machine on a Proxmox server, from setting up permissions to writing and applying your infrastructure definitions.
+In this section, we'll walk through the steps to configure OpenTofu to manage a NixOS virtual machine on a Proxmox server, from setting up permissions to writing and applying your infrastructure definitions.
 
 ## Prerequisites
 
@@ -17,7 +17,7 @@ OpenTofu is a powerful tool for managing infrastructure as code. In this section
 - **OpenTofu**: Install OpenTofu on your local machine. You can follow the [installation guide](https://opentofu.org/docs/intro/install/) for detailed instructions.
 - **NixOS ISO**: Download the latest minimal [NixOS ISO](https://nixos.org/download/) image and upload it to your Proxmox server. See this [guide](../upload-iso-proxmox) for instructions on how to upload the ISO.
 
-## OpenTofu Configuration
+## Configuration
 
 Before starting to write OpenTofu configuration, we need to set up a couple of things in Proxmox to allow OpenTofu to manage your Proxmox resources.
 
@@ -406,9 +406,7 @@ Now that we have the Proxmox user, role, and token set up, and a basic NixOS VM 
 
 </Steps>
 
-## Conclusion
-
-You have successfully set up OpenTofu to manage a NixOS VM on Proxmox. You can now use OpenTofu to automate the management of your Proxmox resources, making it easier to deploy and maintain your NixOS VMs.
+You have now successfully set up OpenTofu to manage a NixOS VM on Proxmox. You can now use OpenTofu to automate the management of your Proxmox resources, making it easier to deploy and maintain your NixOS VMs.
 
 ---
 

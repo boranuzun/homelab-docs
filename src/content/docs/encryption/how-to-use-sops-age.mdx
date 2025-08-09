@@ -87,7 +87,7 @@ creation_rules:
 
 Using `.sops.yaml` is best for projects as it avoids setting env variables or using the `age` flag, enabling consistent, automatic encryption config.
 
-:::warning[The encryption method may vary, based on the file format]
+:::caution[The encryption method may vary, based on the file format]
 
 When encrypting files, you need to specify the input type. This is crucial for SOPS to understand how to handle the file correctly.
 
@@ -150,11 +150,9 @@ sops -d opentofu.auto.tfvars.enc
 sops -d opentofu.auto.tfvars.enc > opentofu.auto.tfvars
 ```
 
-:::warning[The decryption method may vary, based on the file format]
+:::caution[Specify input and output types]
 
-When decrypting files, you need to specify the output type. This is crucial for SOPS to understand how to handle the file correctly.
-
-This is important to ensure that the file is decrypted correctly and can be used later without issues.
+As with encryption, you need to specify the input type when decrypting files. This ensures that SOPS knows how to handle the file correctly.
 
 <Tabs syncKey="file-formats">
   <TabItem label="BINARY">
